@@ -1,5 +1,6 @@
 package org.mastodon.revised.mamut;
 
+import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.util.Locale;
 
@@ -50,7 +51,15 @@ public class Mastodon extends ContextCommand
 		final Mastodon mastodon = new Mastodon();
 		new Context().inject( mastodon );
 		mastodon.run();
-		mastodon.mainWindow.setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
+		mastodon.mainWindow.addWindowListener( new WindowAdapter()
+		{
+			@Override
+			public void windowClosed( final java.awt.event.WindowEvent e )
+			{
+				// Close JVM gracefully.
+				System.exit( 0 );
+			};
+		} );
 
 		final WindowManager windowManager = mastodon.windowManager;
 

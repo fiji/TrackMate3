@@ -8,6 +8,7 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import org.mastodon.graph.GraphChangeListener;
 import org.mastodon.plugin.MastodonPlugins;
 import org.mastodon.revised.bdv.SharedBigDataViewerData;
 import org.mastodon.revised.bdv.overlay.ui.RenderSettingsManager;
@@ -36,7 +37,7 @@ import bdv.spimdata.XmlIoSpimDataMinimal;
 import bdv.viewer.ViewerOptions;
 import mpicbg.spim.data.SpimDataException;
 
-public class ProjectManager
+public class ProjectManager implements GraphChangeListener
 {
 	public static final String CREATE_PROJECT = "create new project";
 	public static final String LOAD_PROJECT = "load project";
@@ -101,6 +102,12 @@ public class ProjectManager
 	private final AbstractNamedAction importMamutAction;
 
 	private final AbstractNamedAction exportMamutAction;
+
+	/** When was the project last saved. */
+	private long saveTimestamp = -1l;
+
+	/** Whem was the model last changed. */
+	private long lastModelChange = -1l;
 
 	public ProjectManager( final WindowManager windowManager )
 	{
@@ -239,6 +246,7 @@ public class ProjectManager
 		final Model model = windowManager.getAppModel().getModel();
 		model.saveRaw( project );
 
+		saveTimestamp = System.currentTimeMillis();
 		updateEnabledActions();
 	}
 
@@ -260,7 +268,14 @@ public class ProjectManager
 		final boolean isNewProject = project.getProjectFolder() == null;
 
 		if ( !isNewProject )
+		{
 			model.loadRaw( project );
+			this.saveTimestamp = System.currentTimeMillis();
+		}
+		else
+		{
+			this.saveTimestamp = -2l;
+		}
 
 		/*
 		 * Load SpimData
@@ -309,6 +324,9 @@ public class ProjectManager
 			model.getTagSetModel().setTagSetStructure( tss );
 		}
 
+		if ( windowManager.getAppModel() != null && windowManager.getAppModel().getModel() != null )
+			windowManager.getAppModel().getModel().getGraph().removeGraphChangeListener( this );
+
 		windowManager.setAppModel( appModel );
 
 		final MamutFeatureComputerService featureComputerService = windowManager.getContext().getService( MamutFeatureComputerService.class );
@@ -319,7 +337,13 @@ public class ProjectManager
 		final ToggleDialogAction toggleFeatureComputationDialogAction = new ToggleDialogAction( "feature computation", featureComputationDialog );
 
 		this.project = project;
+		appModel.getModel().getGraph().addGraphChangeListener( this );
 		updateEnabledActions();
+	}
+
+	public boolean projectNeedsSave()
+	{
+		return lastModelChange > saveTimestamp;
 	}
 
 	public synchronized void importTgmm()
@@ -418,5 +442,11 @@ public class ProjectManager
 			return project.getProjectFolder().getAbsolutePath();
 		else
 			return project.getDatasetXmlFile().getParentFile().getAbsolutePath();
+	}
+
+	@Override
+	public void graphChanged()
+	{
+		lastModelChange = System.currentTimeMillis();
 	}
 }
