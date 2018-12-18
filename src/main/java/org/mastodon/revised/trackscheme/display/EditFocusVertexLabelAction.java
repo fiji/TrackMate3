@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
 import org.mastodon.model.FocusModel;
 import org.mastodon.revised.mamut.KeyConfigContexts;
 import org.mastodon.revised.trackscheme.ScreenTransform;
-import org.mastodon.revised.trackscheme.TrackSchemeEdge;
 import org.mastodon.revised.trackscheme.TrackSchemeVertex;
 import org.mastodon.revised.trackscheme.display.OffsetHeaders.OffsetHeadersListener;
 import org.mastodon.revised.ui.keymap.CommandDescriptionProvider;
@@ -80,7 +79,7 @@ public class EditFocusVertexLabelAction extends AbstractNamedAction implements T
 
 	private final FontMetrics fontMetrics;
 
-	private final FocusModel< TrackSchemeVertex, TrackSchemeEdge > focus;
+	private final FocusModel< TrackSchemeVertex > focus;
 
 	/**
 	 * current width of vertical header.
@@ -95,7 +94,7 @@ public class EditFocusVertexLabelAction extends AbstractNamedAction implements T
 	public static void install(
 			final Actions actions,
 			final TrackSchemePanel panel,
-			final FocusModel< TrackSchemeVertex, TrackSchemeEdge > focus,
+			final FocusModel< TrackSchemeVertex > focus,
 			final UndoPointMarker undoPointMarker )
 	{
 		final EditFocusVertexLabelAction editFocusVertexLabelAction = new EditFocusVertexLabelAction( focus, undoPointMarker, panel );
@@ -105,7 +104,7 @@ public class EditFocusVertexLabelAction extends AbstractNamedAction implements T
 	}
 
 	private EditFocusVertexLabelAction(
-			final FocusModel< TrackSchemeVertex, TrackSchemeEdge > focus,
+			final FocusModel< TrackSchemeVertex > focus,
 			final UndoPointMarker undoPointMarker,
 			final TrackSchemePanel panel )
 	{
@@ -121,7 +120,7 @@ public class EditFocusVertexLabelAction extends AbstractNamedAction implements T
 	public void actionPerformed( final ActionEvent e )
 	{
 		final TrackSchemeVertex ref = panel.getGraph().vertexRef();
-		final TrackSchemeVertex vertex = focus.getFocusedVertex( ref );
+		final TrackSchemeVertex vertex = focus.getFocused( ref );
 		if ( vertex == null )
 		{
 			panel.getGraph().releaseRef( ref );

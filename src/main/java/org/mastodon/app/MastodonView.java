@@ -57,7 +57,7 @@ public class MastodonView<
 
 	protected final HighlightModel< V, E > highlightModel;
 
-	protected final FocusModel< V, E > focusModel;
+	protected final FocusModel< V > focusModel;
 
 	protected final SelectionModel< V, E > selectionModel;
 
@@ -79,7 +79,7 @@ public class MastodonView<
 
 		final TimepointModelAdapter timepointModelAdapter = new TimepointModelAdapter( groupHandle.getModel( appModel.TIMEPOINT ) );
 		final HighlightModelAdapter< MV, ME, V, E > highlightModelAdapter = new HighlightModelAdapter<>( appModel.getHighlightModel(), vertexMap, edgeMap );
-		final FocusModelAdapter< MV, ME, V, E > focusModelAdapter = new FocusModelAdapter<>( appModel.getFocusModel(), vertexMap, edgeMap );
+		final FocusModelAdapter< MV, V > focusModelAdapter = new FocusModelAdapter<>( appModel.getFocusModel(), vertexMap );
 		final SelectionModelAdapter< MV, ME, V, E > selectionModelAdapter = new SelectionModelAdapter<>( appModel.getSelectionModel(), vertexMap, edgeMap );
 		final NavigationHandlerAdapter< MV, ME, V, E > navigationHandlerAdapter = new NavigationHandlerAdapter<>( groupHandle.getModel( appModel.NAVIGATION ), vertexMap, edgeMap );
 

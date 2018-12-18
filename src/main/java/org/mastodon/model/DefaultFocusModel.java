@@ -7,16 +7,16 @@ import org.mastodon.graph.Vertex;
 import org.mastodon.util.Listeners;
 
 /**
- * Class to manage the model vertex that has the "focus", regardless of how this
- * focus is used.
+ * Class to manage the focus of a model vertex in a graph, regardless of how
+ * this focus is used.
  *
  * @param <V>
- *            type of model vertices.
+ *            type of model vertices in the graph.
  * @param <E>
- *            the of model edges.
+ *            type of model edges in the graph.
  */
 public class DefaultFocusModel< V extends Vertex< E >, E extends Edge< V > >
-		implements FocusModel< V, E >, GraphListener< V, E >
+		implements FocusModel< V >, GraphListener< V, E >
 {
 	private final GraphIdBimap< V, E > idmap;
 
@@ -32,7 +32,7 @@ public class DefaultFocusModel< V extends Vertex< E >, E extends Edge< V > >
 	}
 
 	@Override
-	public synchronized void focusVertex( final V vertex )
+	public synchronized void focus( final V vertex )
 	{
 		final int id = ( vertex == null ) ? - 1 : idmap.getVertexId( vertex );
 		if ( focusVertexId != id )
@@ -43,7 +43,7 @@ public class DefaultFocusModel< V extends Vertex< E >, E extends Edge< V > >
 	}
 
 	@Override
-	public synchronized V getFocusedVertex( final V ref )
+	public synchronized V getFocused( final V ref )
 	{
 		return ( focusVertexId < 0 ) ?
 				null : idmap.getVertex( focusVertexId, ref );
@@ -64,7 +64,7 @@ public class DefaultFocusModel< V extends Vertex< E >, E extends Edge< V > >
 	@Override
 	public void graphRebuilt()
 	{
-		focusVertex( null );
+		focus( null );
 // TODO: notifyListeners(); ? (This may change the layout and we might want to re-center on the focused vertex
 	}
 
@@ -78,7 +78,7 @@ public class DefaultFocusModel< V extends Vertex< E >, E extends Edge< V > >
 	public synchronized void vertexRemoved( final V vertex )
 	{
 		if ( focusVertexId == idmap.getVertexId( vertex ) )
-			focusVertex( null );
+			focus( null );
 // TODO: notifyListeners(); ? (This may change the layout and we might want to re-center on the focused vertex
 	}
 

@@ -88,7 +88,7 @@ public class TrackSchemeNavigationBehaviours implements TransformListener< Scree
 
 	private final TrackSchemeOverlay graphOverlay;
 
-	private final FocusModel< TrackSchemeVertex, TrackSchemeEdge > focus;
+	private final FocusModel< TrackSchemeVertex > focus;
 
 	private final ScreenTransform screenTransform;
 
@@ -119,7 +119,7 @@ public class TrackSchemeNavigationBehaviours implements TransformListener< Scree
 			final TrackSchemeGraph< ?, ? > graph,
 			final LineageTreeLayout layout,
 			final TrackSchemeOverlay graphOverlay,
-			final FocusModel< TrackSchemeVertex, TrackSchemeEdge > focus,
+			final FocusModel< TrackSchemeVertex > focus,
 			final NavigationHandler< TrackSchemeVertex, TrackSchemeEdge > navigation,
 			final SelectionModel< TrackSchemeVertex, TrackSchemeEdge > selection )
 	{
@@ -191,7 +191,7 @@ public class TrackSchemeNavigationBehaviours implements TransformListener< Scree
 			}
 		}
 
-		focus.focusVertex( layout.getClosestActiveVertexWithin( lx1, ly1, lx2, ly2, ratioXtoY, vertexRef ) );
+		focus.focus( layout.getClosestActiveVertexWithin( lx1, ly1, lx2, ly2, ratioXtoY, vertexRef ) );
 
 		graph.releaseRef( vertexRef );
 
@@ -255,7 +255,7 @@ public class TrackSchemeNavigationBehaviours implements TransformListener< Scree
 	{
 		final TrackSchemeVertex ref = graph.vertexRef();
 
-		focus.focusVertex( graphOverlay.getVertexAt( x, y, ref ) ); // if clicked outside, getVertexAt == null, clears the focus.
+		focus.focus( graphOverlay.getVertexAt( x, y, ref ) ); // if clicked outside, getVertexAt == null, clears the focus.
 
 		graph.releaseRef( ref );
 	}

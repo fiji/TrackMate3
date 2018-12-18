@@ -4,7 +4,6 @@ import org.mastodon.model.FocusListener;
 import org.mastodon.model.FocusModel;
 import org.mastodon.revised.trackscheme.LineageTreeLayout;
 import org.mastodon.revised.trackscheme.ScreenTransform;
-import org.mastodon.revised.trackscheme.TrackSchemeEdge;
 import org.mastodon.revised.trackscheme.TrackSchemeVertex;
 import org.mastodon.util.Listeners;
 
@@ -15,11 +14,11 @@ import net.imglib2.ui.TransformListener;
  * A {@code FocusModel} for TrackScheme that automatically focuses a vertex near
  * the center of the window if none is focused (on {@code getFocusedVertex()}).
  */
-public class TrackSchemeAutoFocus implements FocusModel< TrackSchemeVertex, TrackSchemeEdge >, TransformListener< ScreenTransform >
+public class TrackSchemeAutoFocus implements FocusModel< TrackSchemeVertex >, TransformListener< ScreenTransform >
 {
 	private final LineageTreeLayout layout;
 
-	private final FocusModel< TrackSchemeVertex, TrackSchemeEdge > focus;
+	private final FocusModel< TrackSchemeVertex > focus;
 
 	private final ScreenTransform screenTransform = new ScreenTransform();
 
@@ -29,28 +28,28 @@ public class TrackSchemeAutoFocus implements FocusModel< TrackSchemeVertex, Trac
 
 	public TrackSchemeAutoFocus(
 			final LineageTreeLayout layout,
-			final FocusModel< TrackSchemeVertex, TrackSchemeEdge > focus )
+			final FocusModel< TrackSchemeVertex > focus )
 	{
 		this.layout = layout;
 		this.focus = focus;
 	}
 
 	@Override
-	public void focusVertex( final TrackSchemeVertex vertex )
+	public void focus( final TrackSchemeVertex vertex )
 	{
-		focus.focusVertex( vertex );
+		focus.focus( vertex );
 	}
 
 	@Override
-	public TrackSchemeVertex getFocusedVertex( final TrackSchemeVertex ref )
+	public TrackSchemeVertex getFocused( final TrackSchemeVertex ref )
 	{
-		TrackSchemeVertex vertex = focus.getFocusedVertex( ref );
+		TrackSchemeVertex vertex = focus.getFocused( ref );
 		if ( vertex != null )
 			return vertex;
 
 		vertex = layout.getClosestActiveVertex( centerPos, ratioXtoY, ref );
 		if ( vertex != null )
-			focus.focusVertex( vertex );
+			focus.focus( vertex );
 
 		return vertex;
 	}

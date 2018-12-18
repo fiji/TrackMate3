@@ -62,7 +62,7 @@ public class BdvSelectionBehaviours< V extends OverlayVertex< V, E >, E extends 
 			final OverlayGraph< V, E > overlayGraph,
 			final OverlayGraphRenderer< V, E > renderer,
 			final SelectionModel< V, E > selection,
-			final FocusModel< V, E > focus,
+			final FocusModel< V > focus,
 			final NavigationHandler< V, E > navigation )
 	{
 		final BdvSelectionBehaviours< V, E > sb = new BdvSelectionBehaviours<>( overlayGraph, renderer, selection, focus, navigation );
@@ -81,7 +81,7 @@ public class BdvSelectionBehaviours< V extends OverlayVertex< V, E >, E extends 
 
 	private final SelectionModel< V, E > selection;
 
-	private final FocusModel< V, E > focus;
+	private final FocusModel< V > focus;
 
 	private final NavigationHandler< V, E > navigation;
 
@@ -89,7 +89,7 @@ public class BdvSelectionBehaviours< V extends OverlayVertex< V, E >, E extends 
 			final OverlayGraph< V, E > overlayGraph,
 			final OverlayGraphRenderer< V, E > renderer,
 			final SelectionModel< V, E > selection,
-			final FocusModel< V, E > focus,
+			final FocusModel< V > focus,
 			final NavigationHandler< V, E > navigation )
 	{
 		this.overlayGraph = overlayGraph;
@@ -178,7 +178,7 @@ public class BdvSelectionBehaviours< V extends OverlayVertex< V, E >, E extends 
 		lock.readLock().lock();
 		try
 		{
-			focus.focusVertex( renderer.getVertexAt( x, y, POINT_SELECT_DISTANCE_TOLERANCE, vertex ) ); // if clicked outside, getVertexAt == null, clears the focus.
+			focus.focus( renderer.getVertexAt( x, y, POINT_SELECT_DISTANCE_TOLERANCE, vertex ) ); // if clicked outside, getVertexAt == null, clears the focus.
 		}
 		finally
 		{

@@ -82,7 +82,7 @@ public class EditSpecialBehaviours< V extends OverlayVertex< V, E >, E extends O
 			final OverlayGraph< V, E > overlayGraph,
 			final OverlayGraphRenderer< V, E > renderer,
 			final SelectionModel< V, E > selection,
-			final FocusModel< V, E > focus,
+			final FocusModel< V > focus,
 			final UndoPointMarker undo )
 	{
 		final EditSpecialBehaviours< V, E > eb = new EditSpecialBehaviours<>( viewer, overlayGraph, renderer, selection, focus, undo );
@@ -103,7 +103,7 @@ public class EditSpecialBehaviours< V extends OverlayVertex< V, E >, E extends O
 
 	private final SelectionModel< V, E > selection;
 
-	private final FocusModel< V, E > focus;
+	private final FocusModel< V > focus;
 
 	private final UndoPointMarker undo;
 
@@ -114,7 +114,7 @@ public class EditSpecialBehaviours< V extends OverlayVertex< V, E >, E extends O
 			final OverlayGraph< V, E > overlayGraph,
 			final OverlayGraphRenderer< V, E > renderer,
 			final SelectionModel< V, E > selection,
-			final FocusModel< V, E > focus,
+			final FocusModel< V > focus,
 			final UndoPointMarker undo )
 	{
 		this.viewer = viewer;
@@ -335,7 +335,7 @@ public class EditSpecialBehaviours< V extends OverlayVertex< V, E >, E extends O
 						undo.setUndoPoint();
 
 						if ( FOCUS_EDITED_SPOT )
-							focus.focusVertex( target );
+							focus.focus( target );
 
 						if ( SELECT_ADDED_SPOT )
 						{
@@ -462,7 +462,7 @@ public class EditSpecialBehaviours< V extends OverlayVertex< V, E >, E extends O
 				undo.setUndoPoint();
 
 				if ( FOCUS_EDITED_SPOT )
-					focus.focusVertex( target );
+					focus.focus( target );
 
 				if ( SELECT_ADDED_SPOT )
 				{

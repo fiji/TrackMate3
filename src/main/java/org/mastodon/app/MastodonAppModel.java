@@ -52,7 +52,7 @@ public class MastodonAppModel<
 
 	private final HighlightModel< V, E > highlightModel;
 
-	private final FocusModel< V, E > focusModel;
+	private final FocusModel< V > focusModel;
 
 	private final GroupManager groupManager;
 
@@ -149,7 +149,7 @@ public class MastodonAppModel<
 		return highlightModel;
 	}
 
-	public FocusModel< V, E > getFocusModel()
+	public FocusModel< V > getFocusModel()
 	{
 		return focusModel;
 	}

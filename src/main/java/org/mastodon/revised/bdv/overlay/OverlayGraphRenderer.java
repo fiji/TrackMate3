@@ -83,7 +83,7 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 
 	private final HighlightModel< V, E > highlight;
 
-	private final FocusModel< V, E > focus;
+	private final FocusModel< V > focus;
 
 	private final SelectionModel< V, E > selection;
 
@@ -92,7 +92,7 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 	public OverlayGraphRenderer(
 			final OverlayGraph< V, E > graph,
 			final HighlightModel< V, E > highlight,
-			final FocusModel< V, E > focus,
+			final FocusModel< V > focus,
 			final SelectionModel< V, E > selection )
 	{
 		this.graph = graph;
@@ -513,7 +513,7 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 				final double pointFadeDepth = settings.getPointFadeDepth();
 
 				final V highlighted = highlight.getHighlightedVertex( ref1 );
-				final V focused = focus.getFocusedVertex( ref2 );
+				final V focused = focus.getFocused( ref2 );
 
 				graphics.setStroke( defaultVertexStroke );
 				final AffineTransform torig = graphics.getTransform();

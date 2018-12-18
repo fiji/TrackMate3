@@ -120,7 +120,7 @@ public class EditBehaviours< V extends OverlayVertex< V, E >, E extends OverlayE
 			final OverlayGraph< V, E > overlayGraph,
 			final OverlayGraphRenderer< V, E > renderer,
 			final SelectionModel< V, E > selection,
-			final FocusModel< V, E > focus,
+			final FocusModel< V > focus,
 			final UndoPointMarker undo )
 	{
 		final EditBehaviours< V, E > eb = new EditBehaviours<>( overlayGraph, renderer, selection, focus, undo, NORMAL_RADIUS_CHANGE, ABIT_RADIUS_CHANGE, ALOT_RADIUS_CHANGE );
@@ -143,7 +143,7 @@ public class EditBehaviours< V extends OverlayVertex< V, E >, E extends OverlayE
 
 	private final SelectionModel< V, E > selection;
 
-	private final FocusModel< V, E > focus;
+	private final FocusModel< V > focus;
 
 	private final UndoPointMarker undo;
 
@@ -151,7 +151,7 @@ public class EditBehaviours< V extends OverlayVertex< V, E >, E extends OverlayE
 			final OverlayGraph< V, E > overlayGraph,
 			final OverlayGraphRenderer< V, E > renderer,
 			final SelectionModel< V, E > selection,
-			final FocusModel< V, E > focus,
+			final FocusModel< V > focus,
 			final UndoPointMarker undo,
 			final double normalRadiusChange,
 			final double aBitRadiusChange,
@@ -215,7 +215,7 @@ public class EditBehaviours< V extends OverlayVertex< V, E >, E extends OverlayE
 					undo.setUndoPoint();
 
 					if ( FOCUS_EDITED_SPOT )
-						focus.focusVertex( vertex );
+						focus.focus( vertex );
 
 					if ( SELECT_ADDED_SPOT )
 					{
@@ -295,7 +295,7 @@ public class EditBehaviours< V extends OverlayVertex< V, E >, E extends OverlayE
 				undo.setUndoPoint();
 
 				if ( FOCUS_EDITED_SPOT )
-					focus.focusVertex( vertex );
+					focus.focus( vertex );
 
 				moving = false;
 				lock.readLock().unlock();
@@ -346,7 +346,7 @@ public class EditBehaviours< V extends OverlayVertex< V, E >, E extends OverlayE
 					undo.setUndoPoint();
 
 					if ( FOCUS_EDITED_SPOT )
-						focus.focusVertex( vertex );
+						focus.focus( vertex );
 				}
 			}
 			finally

@@ -16,14 +16,14 @@ import org.mastodon.util.Listeners;
  * @param <E>
  *            the type of edges in the graph.
  */
-public class AutoNavigateFocusModel< V extends Vertex< E >, E extends Edge< V > > implements FocusModel< V, E >
+public class AutoNavigateFocusModel< V extends Vertex< E >, E extends Edge< V > > implements FocusModel< V >
 {
-	private final FocusModel< V, E > focus;
+	private final FocusModel< V > focus;
 
 	private final NavigationHandler< V, E > navigation;
 
 	public AutoNavigateFocusModel(
-			final FocusModel< V, E > focus,
+			final FocusModel< V > focus,
 			final NavigationHandler< V, E > navigation )
 	{
 		this.focus = focus;
@@ -31,16 +31,16 @@ public class AutoNavigateFocusModel< V extends Vertex< E >, E extends Edge< V > 
 	}
 
 	@Override
-	public void focusVertex( final V vertex )
+	public void focus( final V vertex )
 	{
-		focus.focusVertex( vertex );
+		focus.focus( vertex );
 		navigation.notifyNavigateToVertex( vertex );
 	}
 
 	@Override
-	public V getFocusedVertex( final V ref )
+	public V getFocused( final V ref )
 	{
-		return focus.getFocusedVertex( ref );
+		return focus.getFocused( ref );
 	}
 
 	@Override
