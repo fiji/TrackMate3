@@ -1,10 +1,10 @@
 package org.mastodon.revised.bdv.overlay;
 
-import org.mastodon.revised.ui.selection.NavigationEtiquette;
 import org.mastodon.model.NavigationListener;
+import org.mastodon.revised.bdv.overlay.util.TimeAndTranslationAnimator;
+import org.mastodon.revised.ui.selection.NavigationEtiquette;
 
 import bdv.viewer.ViewerPanel;
-import bdv.viewer.animate.TranslationAnimator;
 import net.imglib2.realtransform.AffineTransform3D;
 
 public class OverlayNavigation< V extends OverlayVertex< V, E >, E extends OverlayEdge< E, V > >
@@ -54,15 +54,20 @@ public class OverlayNavigation< V extends OverlayVertex< V, E >, E extends Overl
 	@Override
 	public void navigateToVertex( final V vertex )
 	{
-		// Always move in T.
-		final int tp = vertex.getTimepoint();
-		panel.setTimepoint( tp );
-
+		// Animate in time.
+		final int targetTp = vertex.getTimepoint();
+		final int currentTp = panel.getState().getCurrentTimepoint();
 		final AffineTransform3D currentTransform = panel.getDisplay().getTransformEventHandler().getTransform();
 		final double[] target = navigationBehaviour.navigateToVertex( vertex, currentTransform );
 		if ( target != null )
 		{
-			final TranslationAnimator animator = new TranslationAnimator( currentTransform, target, 300 );
+			final TimeAndTranslationAnimator animator = new TimeAndTranslationAnimator(
+					currentTransform,
+					target,
+					currentTp,
+					targetTp,
+					t -> panel.setTimepoint( t ),
+					300 );
 			animator.setTime( System.currentTimeMillis() );
 			panel.setTransformAnimator( animator );
 		}
@@ -73,17 +78,23 @@ public class OverlayNavigation< V extends OverlayVertex< V, E >, E extends Overl
 	@Override
 	public void navigateToEdge( final E edge )
 	{
-		// Always move in T.
+		// Animate in time.
 		final V ref = graph.vertexRef();
-		final int tp = edge.getTarget( ref ).getTimepoint();
+		final int targetTp = edge.getTarget( ref ).getTimepoint();
+		final int currentTp = panel.getState().getCurrentTimepoint();
 		graph.releaseRef( ref );
-		panel.setTimepoint( tp );
 
 		final AffineTransform3D currentTransform = panel.getDisplay().getTransformEventHandler().getTransform();
 		final double[] target = navigationBehaviour.navigateToEdge( edge, currentTransform );
 		if ( target != null )
 		{
-			final TranslationAnimator animator = new TranslationAnimator( currentTransform, target, 300 );
+			final TimeAndTranslationAnimator animator = new TimeAndTranslationAnimator(
+					currentTransform,
+					target,
+					currentTp,
+					targetTp,
+					t -> panel.setTimepoint( t ),
+					300 );
 			animator.setTime( System.currentTimeMillis() );
 			panel.setTransformAnimator( animator );
 		}
