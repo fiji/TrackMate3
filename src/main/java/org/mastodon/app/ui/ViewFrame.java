@@ -96,4 +96,8 @@ public class ViewFrame extends JFrame
 		}
 	}
 
+	public JPanel getSettingsPanel()
+	{
+		return settingsPanel;
+	}
 }
