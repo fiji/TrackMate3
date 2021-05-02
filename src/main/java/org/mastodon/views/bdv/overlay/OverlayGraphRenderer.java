@@ -56,6 +56,8 @@ import org.mastodon.spatial.SpatioTemporalIndex;
 import org.mastodon.ui.coloring.GraphColorGenerator;
 import org.mastodon.util.GeometryUtil;
 import org.mastodon.views.bdv.overlay.ScreenVertexMath.Ellipse;
+import org.mastodon.views.bdv.overlay.Visibilities.Visibility;
+import org.mastodon.views.bdv.overlay.Visibilities.VisibilityMode;
 import org.mastodon.views.bdv.overlay.util.BdvRendererUtil;
 
 import bdv.util.Affine3DHelpers;
@@ -120,6 +122,8 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 
 	private RenderSettings settings;
 
+	private final Visibilities< V, E > visibilities;
+
 	public OverlayGraphRenderer(
 			final OverlayGraph< V, E > graph,
 			final HighlightModel< V, E > highlight,
@@ -132,6 +136,7 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 		this.focus = focus;
 		this.selection = selection;
 		this.coloring = coloring;
+		this.visibilities = new Visibilities<>( graph, selection, focus, graph.getLock() );
 		index = graph.getIndex();
 		renderTransform = new AffineTransform3D();
 		setRenderSettings( RenderSettings.defaultStyle() ); // default RenderSettings
@@ -162,6 +167,16 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 	public void setRenderSettings( final RenderSettings settings )
 	{
 		this.settings = settings;
+	}
+
+	public VisibilityMode nextVisibilityMode()
+	{
+		return visibilities.nextMode();
+	}
+
+	public Visibilities< V, E > getVisibilities()
+	{
+		return visibilities;
 	}
 
 	public static final double pointRadius = 2.5;
@@ -433,9 +448,10 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 			final int currentTimepoint,
 			final EdgeOperation< E > edgeOperation )
 	{
-		if ( !settings.getDrawLinks())
+		if ( !settings.getDrawLinks() || visibilities.getMode() == VisibilityMode.NONE )
 			return;
 
+		final Visibility< V, E > visibility = visibilities.getVisibility();
 		final double maxDepth = getMaxDepth( transform );
 
 		final V ref = graph.vertexRef();
@@ -463,6 +479,9 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 
 				for ( final E edge : vertex.incomingEdges() )
 				{
+					if ( !visibility.isVisible( edge ) )
+						continue;
+
 					final V source = edge.getSource( ref );
 					source.localize( gPos );
 					transform.apply( gPos, lPos );
@@ -486,6 +505,9 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 	@Override
 	public void drawOverlays( final Graphics g )
 	{
+		if ( visibilities.getMode() == VisibilityMode.NONE )
+			return;
+
 		final Graphics2D graphics = ( Graphics2D ) g;
 		final BasicStroke defaultVertexStroke = new BasicStroke();
 		final BasicStroke highlightedVertexStroke = new BasicStroke( 4f );
@@ -572,6 +594,7 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 				final boolean drawEllipsoidSliceIntersection = settings.getDrawEllipsoidSliceIntersection();
 				final boolean drawEllipsoidSliceProjection = settings.getDrawEllipsoidSliceProjection();
 				final double pointFadeDepth = settings.getPointFadeDepth();
+				final Visibility< V, E > visibility = visibilities.getVisibility();
 
 				final V highlighted = highlight.getHighlightedVertex( ref1 );
 				final V focused = focus.getFocusedVertex( ref2 );
@@ -584,6 +607,9 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 				ccp.clip( cropPolytopeGlobal );
 				for ( final V vertex : ccp.getInsideValues() )
 				{
+					if ( !visibility.isVisible( vertex ) )
+						continue;
+
 					final int color = coloring.color( vertex );
 					final boolean isHighlighted = vertex.equals( highlighted );
 					final boolean isFocused = vertex.equals( focused );
@@ -744,7 +770,9 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 		class Op implements EdgeOperation< E >
 		{
 			final double squTolerance = tolerance * tolerance;
+
 			double bestSquDist = Double.POSITIVE_INFINITY;
+
 			boolean found = false;
 
 			@Override
@@ -849,12 +877,13 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 	 */
 	public V getVertexAt( final int x, final int y, final double tolerance, final V ref )
 	{
-		if ( !settings.getDrawSpots() )
+		if ( !settings.getDrawSpots() || ( visibilities.getMode() == VisibilityMode.NONE ) )
 			return null;
 
 		final AffineTransform3D transform = getRenderTransformCopy();
 		final double maxDepth = getMaxDepth( transform );
 		final int currentTimepoint = renderTimepoint;
+		final Visibility< V, E > visibility = visibilities.getVisibility();
 
 		final double[] lPos = new double[] { x, y, 0 };
 		final double[] gPos = new double[ 3 ];
@@ -878,6 +907,9 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 			ccp.clip( cropPolytopeGlobal );
 			for ( final V vertex : ccp.getInsideValues() )
 			{
+				if ( !visibility.isVisible( vertex ) )
+					continue;
+
 				screenVertexMath.init( vertex, transform );
 				final double z = screenVertexMath.getViewPos()[ 2 ];
 				final double sd = sliceDistance( z, maxDepth );
@@ -903,6 +935,9 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 			while ( inns.hasNext() )
 			{
 				final V vertex = inns.next();
+				if ( !visibility.isVisible( vertex ) )
+					continue;
+
 				if ( inns.getSquareDistance() > maxSquDist )
 					break;
 				screenVertexMath.init( vertex, transform );
@@ -920,7 +955,7 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 			final NearestNeighborSearch< V > nns = index.getSpatialIndex( currentTimepoint ).getNearestNeighborSearch();
 			nns.search( RealPoint.wrap( gPos ) );
 			final V vertex = nns.getSampler().get();
-			if ( vertex != null )
+			if ( vertex != null && visibility.isVisible( vertex ) )
 			{
 				screenVertexMath.init( vertex, transform );
 				final double z = screenVertexMath.getViewPos()[ 2 ];
@@ -964,18 +999,25 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 	RefCollection< V > getVisibleVertices( final AffineTransform3D transform, final int timepoint )
 	{
 		final RefList< V > contextList = RefCollections.createRefList( graph.vertices() );
+		if ( visibilities.getMode() == VisibilityMode.NONE )
+			return contextList;
+
 		final double maxDepth = getMaxDepth( transform );
 		final boolean drawPointsAlways = drawPointsAlways();
 		final boolean drawPointsMaybe = drawPointsMaybe();
 		final boolean drawEllipsoidSliceIntersection = settings.getDrawEllipsoidSliceIntersection();
 		final boolean drawEllipsoidSliceProjection = settings.getDrawEllipsoidSliceProjection();
 		final ScreenVertexMath screenVertexMath = new ScreenVertexMath();
+		final Visibility< V, E > visibility = visibilities.getVisibility();
 
 		final ConvexPolytope cropPolytopeGlobal = getVisiblePolytopeGlobal( transform, timepoint );
 		final ClipConvexPolytope< V > ccp = index.getSpatialIndex( timepoint ).getClipConvexPolytope();
 		ccp.clip( cropPolytopeGlobal );
 		for ( final V vertex : ccp.getInsideValues() )
 		{
+			if ( !visibility.isVisible( vertex ) )
+				continue;
+
 			screenVertexMath.init( vertex, transform );
 
 			if ( drawEllipsoidSliceIntersection )
