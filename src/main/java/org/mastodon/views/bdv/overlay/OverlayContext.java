@@ -2,9 +2,9 @@ package org.mastodon.views.bdv.overlay;
 
 import java.util.concurrent.locks.Lock;
 
+import org.mastodon.spatial.SpatioTemporalIndex;
 import org.mastodon.views.context.Context;
 import org.mastodon.views.context.ContextListener;
-import org.mastodon.spatial.SpatioTemporalIndex;
 
 import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.ui.TransformListener;
@@ -44,6 +44,12 @@ public class OverlayContext< V extends OverlayVertex< V, ? > > implements
 //		ccp.clip( visiblePolytope );
 //		return ccp.getInsideValues();
 		return renderer.getVisibleVertices( transform, timepoint );
+	}
+
+	@Override
+	public int getTimepoint()
+	{
+		return renderer.getCurrentTimepoint();
 	}
 
 	private final AffineTransform3D transform = new AffineTransform3D();

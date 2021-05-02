@@ -74,4 +74,10 @@ public class OverlayContextWrapper< V extends Vertex< E >, E extends Edge< V > >
 			}
 		};
 	}
+
+	@Override
+	public int getTimepoint()
+	{
+		return context.getTimepoint();
+	}
 }

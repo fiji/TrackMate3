@@ -7,4 +7,6 @@ public interface Context< V >
 	public Lock readLock();
 
 	public Iterable< V > getInsideVertices( final int timepoint );
+
+	public int getTimepoint();
 }

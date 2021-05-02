@@ -200,7 +200,9 @@ public class MainWindow extends JFrame
 				),
 				windowMenu(
 						item( WindowManager.NEW_BDV_VIEW ),
-						item( WindowManager.NEW_TRACKSCHEME_VIEW )
+						item( WindowManager.NEW_TRACKSCHEME_VIEW ),
+						item( WindowManager.NEW_TABLE_VIEW ),
+						item( WindowManager.NEW_SELECTION_TABLE_VIEW )
 				)
 		);
 	}

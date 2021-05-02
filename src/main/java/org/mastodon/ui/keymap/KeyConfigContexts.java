@@ -23,6 +23,11 @@ public final class KeyConfigContexts
 	 */
 	public static final String BIGDATAVIEWER = "bdv";
 
+	/**
+	 * The action or behaviour applies to the table views.
+	 */
+	public static final String TABLE = "table";
+
 	private KeyConfigContexts()
 	{}
 }

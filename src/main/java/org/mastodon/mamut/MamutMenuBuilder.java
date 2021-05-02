@@ -11,6 +11,7 @@ import org.mastodon.app.ui.ViewMenu;
 import org.mastodon.app.ui.ViewMenuBuilder;
 import org.mastodon.ui.SelectionActions;
 import org.mastodon.views.bdv.BigDataViewerActionsMamut;
+import org.mastodon.views.table.TableViewActions;
 import org.mastodon.views.trackscheme.display.EditFocusVertexLabelAction;
 import org.mastodon.views.trackscheme.display.TrackSchemeNavigationActions;
 
@@ -30,6 +31,8 @@ public class MamutMenuBuilder extends ViewMenuBuilder
 
 		menuTexts.put( WindowManager.NEW_BDV_VIEW, "New Bdv" );
 		menuTexts.put( WindowManager.NEW_TRACKSCHEME_VIEW, "New Trackscheme" );
+		menuTexts.put( WindowManager.NEW_TABLE_VIEW, "New data table" );
+		menuTexts.put( WindowManager.NEW_SELECTION_TABLE_VIEW, "New selection table" );
 		menuTexts.put( WindowManager.PREFERENCES_DIALOG, "Preferences..." );
 
 		menuTexts.put( MastodonFrameViewActions.TOGGLE_SETTINGS_PANEL, "Settings Toolbar" );
@@ -58,6 +61,10 @@ public class MamutMenuBuilder extends ViewMenuBuilder
 		menuTexts.put( TrackSchemeNavigationActions.TOGGLE_FOCUS_SELECTION, "Toggle Focused Vertex Selection" );
 
 		menuTexts.put( EditFocusVertexLabelAction.EDIT_FOCUS_LABEL, "Edit Vertex Label" );
+
+		menuTexts.put( TableViewActions.EDIT_LABEL, "Edit Vertex Label" );
+		menuTexts.put( TableViewActions.TOGGLE_TAG, "Toggle Current Tag" );
+		menuTexts.put( TableViewActions.EXPORT_TO_CSV, "Export to CSV" );
 	}
 
 	public static void build( final ViewMenu viewMenu, final ActionMap actionMap, final MenuItem... items )

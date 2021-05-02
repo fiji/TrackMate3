@@ -124,5 +124,11 @@ public class TrackSchemeContextListener< V extends Vertex< ? > >  implements Con
 				}
 			};
 		}
+
+		@Override
+		public int getTimepoint()
+		{
+			return context.getTimepoint();
+		}
 	}
 }
