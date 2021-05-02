@@ -116,4 +116,14 @@ public class MastodonView<
 		runOnClose.forEach( Runnable::run );
 		runOnClose.clear();
 	}
+
+	/**
+	 * Exposes the {@link GroupHandle} of this view.
+	 * 
+	 * @return the {@link GroupHandle} of this view.
+	 */
+	public GroupHandle getGroupHandle()
+	{
+		return groupHandle;
+	}
 }

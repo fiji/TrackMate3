@@ -1,9 +1,19 @@
 package org.mastodon.mamut;
 
+import static org.mastodon.mamut.project.MamutProjectIO.MAMUTPROJECT_VERSION_ATTRIBUTE_CURRENT;
+import static org.mastodon.mamut.project.MamutProjectIO.MAMUTPROJECT_VERSION_ATTRIBUTE_NAME;
+
 import java.awt.Component;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 import org.mastodon.graph.io.RawGraphIO.FileIdToGraphMap;
 import org.mastodon.graph.io.RawGraphIO.GraphToFileIdMap;
 import org.mastodon.mamut.feature.MamutRawFeatureModelIO;
@@ -16,6 +26,8 @@ import org.mastodon.mamut.model.Model;
 import org.mastodon.mamut.model.Spot;
 import org.mastodon.mamut.plugin.MamutPlugins;
 import org.mastodon.mamut.project.MamutProject;
+import org.mastodon.mamut.project.MamutProject.ProjectReader;
+import org.mastodon.mamut.project.MamutProject.ProjectWriter;
 import org.mastodon.mamut.project.MamutProjectIO;
 import org.mastodon.ui.coloring.feature.FeatureColorModeManager;
 import org.mastodon.ui.keymap.CommandDescriptionProvider;
@@ -24,8 +36,8 @@ import org.mastodon.ui.keymap.KeyConfigContexts;
 import org.mastodon.ui.keymap.KeymapManager;
 import org.mastodon.ui.util.ExtensionFileFilter;
 import org.mastodon.ui.util.FileChooser;
-import org.mastodon.ui.util.XmlFileFilter;
 import org.mastodon.ui.util.FileChooser.SelectionMode;
+import org.mastodon.ui.util.XmlFileFilter;
 import org.mastodon.util.DummySpimData;
 import org.mastodon.views.bdv.SharedBigDataViewerData;
 import org.mastodon.views.bdv.overlay.ui.RenderSettingsManager;
@@ -60,6 +72,10 @@ public class ProjectManager
 	static final String[] IMPORT_SIMI_KEYS = new String[] { "not mapped" };
 	static final String[] IMPORT_MAMUT_KEYS = new String[] { "not mapped" };
 	static final String[] EXPORT_MAMUT_KEYS = new String[] { "not mapped" };
+
+	private static final String GUI_TAG = "MamutGui";
+
+	private static final String WINDOWS_TAG = "Windows";
 
 	/*
 	 * Command descriptions for all provided commands
@@ -249,6 +265,8 @@ public class ProjectManager
 			final GraphToFileIdMap< Spot, Link > idmap = model.saveRaw( writer );
 			// Serialize feature model.
 			MamutRawFeatureModelIO.serialize( windowManager.getContext(), model.getFeatureModel(), idmap, writer );
+			// Serialize GUI state.
+			saveGUI( writer );
 		}
 		updateEnabledActions();
 	}
@@ -279,7 +297,7 @@ public class ProjectManager
 			{
 				spimData = new XmlIoSpimDataMinimal().load( spimDataXmlFilename );
 			}
-			catch ( SpimDataIOException e )
+			catch ( final SpimDataIOException e )
 			{
 				e.printStackTrace();
 				System.err.println( "Could not open image data file. Opening with dummy dataset. Please fix dataset path!" );
@@ -357,6 +375,23 @@ public class ProjectManager
 				globalAppActions );
 
 		windowManager.setAppModel( appModel );
+
+		// Restore GUI state if loaded project, now that we have an App model.
+		if ( !isNewProject )
+		{
+			try (final MamutProject.ProjectReader reader = project.openForReading())
+			{
+				try
+				{
+					loadGUI( reader );
+				}
+				catch ( final FileNotFoundException fnfe )
+				{
+					// Ignore missing gui file.
+				}
+			}
+		}
+
 		this.project = project;
 		updateEnabledActions();
 	}
@@ -477,4 +512,51 @@ public class ProjectManager
 			return new File( f.getParentFile(), fn + EXT_DOT_MASTODON ).getAbsolutePath();
 		}
 	}
+
+	/*
+	 * GUI IO methods.
+	 */
+
+	/**
+	 * Serialize window positions and states.
+	 *
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	private void saveGUI( final ProjectWriter writer ) throws FileNotFoundException, IOException
+	{
+		final Element guiRoot = new Element( GUI_TAG );
+		guiRoot.setAttribute( MAMUTPROJECT_VERSION_ATTRIBUTE_NAME, MAMUTPROJECT_VERSION_ATTRIBUTE_CURRENT );
+		final Element windows = new Element( WINDOWS_TAG );
+		windowManager.forEachView( ( view ) -> windows.addContent(
+				MamutViewStateSerialization.toXml( view ) ) );
+		guiRoot.addContent( windows );
+		final Document doc = new Document( guiRoot );
+		final XMLOutputter xout = new XMLOutputter( Format.getPrettyFormat() );
+		xout.output( doc, writer.getGuiOutputStream() );
+	}
+
+	private void loadGUI( final ProjectReader reader ) throws IOException
+	{
+		final SAXBuilder sax = new SAXBuilder();
+		Document guiDoc;
+		try
+		{
+			guiDoc = sax.build( reader.getGuiInputStream() );
+		}
+		catch ( final JDOMException e )
+		{
+			throw new IOException( e );
+		}
+		final Element root = guiDoc.getRootElement();
+		if ( !GUI_TAG.equals( root.getName() ) )
+			throw new IOException( "expected <" + GUI_TAG + "> root element. wrong file?" );
+
+		final Element windowsEl = root.getChild( WINDOWS_TAG );
+		if ( null == windowsEl )
+			return;
+
+		MamutViewStateSerialization.fromXml( windowsEl, windowManager );
+	}
+
 }

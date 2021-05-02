@@ -46,6 +46,8 @@ public class MamutProject
 
 	static final String FEATURE_FOLDER_NAME = "features";
 
+	static final String GUI_FILE_NAME = "gui.xml";
+
 	public MamutProject( final String projectRoot )
 	{
 		this( new File( projectRoot ), null );
@@ -159,6 +161,8 @@ public class MamutProject
 		 * @return the collection of feature keys.
 		 */
 		Collection< String > getFeatureKeys();
+		
+		InputStream getGuiInputStream() throws IOException;
 	}
 
 	public interface ProjectWriter extends Closeable
@@ -170,6 +174,8 @@ public class MamutProject
 		OutputStream getRawTagsOutputStream() throws IOException;
 
 		OutputStream getFeatureOutputStream( String featureKey ) throws IOException;
+
+		OutputStream getGuiOutputStream() throws IOException;
 	}
 
 	private class ReadFromDirectory implements ProjectReader
@@ -211,6 +217,12 @@ public class MamutProject
 				.map( s -> s.replace( ".raw", "" ) )
 				.collect( Collectors.toList() );
 			return featureKeys;
+		}
+
+		@Override
+		public InputStream getGuiInputStream() throws IOException
+		{
+			return new FileInputStream( new File( projectRoot, GUI_FILE_NAME ) );
 		}
 
 		@Override
@@ -260,6 +272,12 @@ public class MamutProject
 		}
 
 		@Override
+		public InputStream getGuiInputStream() throws IOException
+		{
+			return zip.getInputStream( GUI_FILE_NAME );
+		}
+
+		@Override
 		public void close() throws IOException
 		{
 			zip.close();
@@ -294,6 +312,12 @@ public class MamutProject
 			if ( !featureFolder.exists() )
 				featureFolder.mkdir();
 			return new FileOutputStream( new File( featureFolder, featureKey + ".raw" ) );
+		}
+
+		@Override
+		public OutputStream getGuiOutputStream() throws IOException
+		{
+			return new FileOutputStream( new File( projectRoot, GUI_FILE_NAME ) );
 		}
 
 		@Override
@@ -332,6 +356,12 @@ public class MamutProject
 		public OutputStream getFeatureOutputStream( final String featureKey ) throws IOException
 		{
 			return zip.getOutputStream( FEATURE_FOLDER_NAME + "/" + featureKey + ".raw" );
+		}
+
+		@Override
+		public OutputStream getGuiOutputStream() throws IOException
+		{
+			return zip.getOutputStream( GUI_FILE_NAME );
 		}
 
 		@Override

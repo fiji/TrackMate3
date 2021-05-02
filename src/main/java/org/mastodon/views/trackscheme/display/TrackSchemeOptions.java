@@ -58,6 +58,34 @@ public class TrackSchemeOptions
 	}
 
 	/**
+	 * Sets the X position of the top-left corner of the
+	 * {@link TrackSchemeFrame}.
+	 * 
+	 * @param x
+	 *            the X position.
+	 * @return this instance.
+	 */
+	public TrackSchemeOptions x( final int x )
+	{
+		values.x = x;
+		return this;
+	}
+
+	/**
+	 * Sets the Y position of the top-left corner of the
+	 * {@link TrackSchemeFrame}.
+	 * 
+	 * @param y
+	 *            the Y position.
+	 * @return this instance.
+	 */
+	public TrackSchemeOptions y( final int y )
+	{
+		values.y = y;
+		return this;
+	}
+
+	/**
 	 * Sets the width of {@link TrackSchemePanel} canvas.
 	 *
 	 * @param w
@@ -173,6 +201,10 @@ public class TrackSchemeOptions
 	 */
 	public static class Values
 	{
+		private int x = 0;
+
+		private int y = 0;
+
 		private int width = 800;
 
 		private int height = 600;
@@ -192,6 +224,8 @@ public class TrackSchemeOptions
 		public TrackSchemeOptions optionsFromValues()
 		{
 			return new TrackSchemeOptions().
+				x( x ).
+				y( y ).
 				width( width ).
 				height( height ).
 				animationDurationMillis( animationDurationMillis ).
@@ -199,6 +233,16 @@ public class TrackSchemeOptions
 				style( style ).
 				trackSchemeOverlayFactory( trackSchemeOverlayFactory ).
 				graphColorGenerator( graphColorGenerator );
+		}
+
+		public int getX()
+		{
+			return x;
+		}
+
+		public int getY()
+		{
+			return y;
 		}
 
 		public int getWidth()
