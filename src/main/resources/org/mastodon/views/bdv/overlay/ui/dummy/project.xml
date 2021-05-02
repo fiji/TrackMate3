@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MamutProject version="0.3">
+  <SpimDataFile type="relative">null</SpimDataFile>
+  <SpaceUnits>pixel</SpaceUnits>
+  <TimeUnits>frame</TimeUnits>
+</MamutProject>

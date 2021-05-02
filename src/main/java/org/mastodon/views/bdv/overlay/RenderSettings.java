@@ -28,6 +28,7 @@
  */
 package org.mastodon.views.bdv.overlay;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -47,6 +48,8 @@ public class RenderSettings implements Style< RenderSettings >
 	public static final boolean DEFAULT_USE_GRADIENT = false;
 	public static final boolean DEFAULT_DRAW_SPOTS = true;
 	public static final boolean DEFAULT_DRAW_LINKS = true;
+	public static final boolean DEFAULT_DRAW_LINKS_AHEAD_IN_TIME = false;
+	public static final boolean DEFAULT_DRAW_ARROW_HEADS = false;
 	public static final boolean DEFAULT_DRAW_ELLIPSE = true;
 	public static final boolean DEFAULT_DRAW_SLICE_INTERSECTION = true;
 	public static final boolean DEFAULT_DRAW_SLICE_PROJECTION = !DEFAULT_DRAW_SLICE_INTERSECTION;
@@ -55,6 +58,9 @@ public class RenderSettings implements Style< RenderSettings >
 	public static final boolean DEFAULT_DRAW_SPOT_LABELS = false;
 	public static final boolean DEFAULT_IS_FOCUS_LIMIT_RELATIVE = true;
 	public static final double DEFAULT_ELLIPSOID_FADE_DEPTH = 0.2;
+	public static final int DEFAULT_COLOR_SPOT_AND_PRESENT = Color.GREEN.getRGB();
+	public static final int DEFAULT_COLOR_PAST = Color.RED.getRGB();
+	public static final int DEFAULT_COLOR_FUTURE = Color.BLUE.getRGB();
 
 	public interface UpdateListener
 	{
@@ -98,6 +104,8 @@ public class RenderSettings implements Style< RenderSettings >
 		useGradient = settings.useGradient;
 		timeLimit = settings.timeLimit;
 		drawLinks = settings.drawLinks;
+		drawLinksAheadInTime = settings.drawLinksAheadInTime;
+		drawArrowHeads = settings.drawArrowHeads;
 		drawSpots = settings.drawSpots;
 		drawEllipsoidSliceProjection = settings.drawEllipsoidSliceProjection;
 		drawEllipsoidSliceIntersection = settings.drawEllipsoidSliceIntersection;
@@ -108,6 +116,9 @@ public class RenderSettings implements Style< RenderSettings >
 		isFocusLimitViewRelative = settings.isFocusLimitViewRelative;
 		ellipsoidFadeDepth = settings.ellipsoidFadeDepth;
 		pointFadeDepth = settings.pointFadeDepth;
+		colorSpot = settings.colorSpot;
+		colorPast = settings.colorPast;
+		colorFuture = settings.colorFuture;
 		notifyListeners();
 	}
 
@@ -152,6 +163,17 @@ public class RenderSettings implements Style< RenderSettings >
 	 * Whether to draw links (at all).
 	 */
 	private boolean drawLinks;
+
+	/**
+	 * Whether to draw links ahead in time. They are otherwise drawn only
+	 * backward in time.
+	 */
+	private boolean drawLinksAheadInTime;
+
+	/**
+	 * Whether to draw links with an arrow head, in time direction.
+	 */
+	private boolean drawArrowHeads;
 
 	/**
 	 * Whether to draw spots (at all).
@@ -232,6 +254,21 @@ public class RenderSettings implements Style< RenderSettings >
 	 * they are fully opaque, then their alpha value goes to 0 linearly.
 	 */
 	private double pointFadeDepth;
+
+	/**
+	 * The color used to paint spots and links in the current time-point.
+	 */
+	private int colorSpot;
+
+	/**
+	 * The color used to paint links in the past time-points.
+	 */
+	private int colorPast;
+
+	/**
+	 * The color used to paint links in the future time-points.
+	 */
+	private int colorFuture;
 
 	/**
 	 * Returns the name of this {@link RenderSettings}.
@@ -354,6 +391,27 @@ public class RenderSettings implements Style< RenderSettings >
 	}
 
 	/**
+	 * Gets whether to draw links ahead in time. They are otherwise drawn only
+	 * backward in time.
+	 * 
+	 * @return {@code true} if links are drawn ahead in time.
+	 */
+	public boolean getDrawLinksAheadInTime()
+	{
+		return drawLinksAheadInTime;
+	}
+
+	/**
+	 * Gets whether to draw links with arrow heads.
+	 *
+	 * @return {@code true} if links are drawn with arrow heads.
+	 */
+	public boolean getDrawArrowHeads()
+	{
+		return drawArrowHeads;
+	}
+
+	/**
 	 * Sets whether to draw links (at all). For specific settings, see
 	 * {@link #setTimeLimit(int)}, {@link #setUseGradient(boolean)}.
 	 *
@@ -365,6 +423,37 @@ public class RenderSettings implements Style< RenderSettings >
 		if ( this.drawLinks != drawLinks )
 		{
 			this.drawLinks = drawLinks;
+			notifyListeners();
+		}
+	}
+
+	/**
+	 * Sets whether to draw links ahead in time. They are otherwise drawn only
+	 * backward in time.
+	 *
+	 * @param drawLinksAheadInTime
+	 *            whether to draw links ahead in time.
+	 */
+	public synchronized void setDrawLinksAheadInTime( final boolean drawLinksAheadInTime )
+	{
+		if ( this.drawLinksAheadInTime != drawLinksAheadInTime )
+		{
+			this.drawLinksAheadInTime = drawLinksAheadInTime;
+			notifyListeners();
+		}
+	}
+
+	/**
+	 * Sets whether to draw links with arrow heads.
+	 *
+	 * @param drawArrowHeads
+	 *            whether to draw links with arrow heads.
+	 */
+	public synchronized void setDrawArrowHeads( final boolean drawArrowHeads )
+	{
+		if ( this.drawArrowHeads != drawArrowHeads )
+		{
+			this.drawArrowHeads = drawArrowHeads;
 			notifyListeners();
 		}
 	}
@@ -699,6 +788,84 @@ public class RenderSettings implements Style< RenderSettings >
 		}
 	}
 
+	/**
+	 * Returns the color used to paint spots and links in the current
+	 * time-point.
+	 * 
+	 * @return the color used to paint spots and links in the current
+	 *         time-point.
+	 */
+	public int getColorSpot()
+	{
+		return colorSpot;
+	}
+
+	/**
+	 * Sets the color used to paint spots and links in the current time-point.
+	 * 
+	 * @param colorSpot
+	 *            the color used to paint spots and links in the current
+	 *            time-point.
+	 */
+	public synchronized void setColorSpot( final int colorSpot )
+	{
+		if ( this.colorSpot != colorSpot )
+		{
+			this.colorSpot = colorSpot;
+			notifyListeners();
+		}
+	}
+
+	/**
+	 * Returns the color used to paint links in the past time-points.
+	 * 
+	 * @return the color used to paint links in the past time-points.
+	 */
+	public int getColorPast()
+	{
+		return colorPast;
+	}
+
+	/**
+	 * Sets the color used to paint links in the past time-points.
+	 * 
+	 * @param colorPast
+	 *            the color used to paint links in the past time-points.
+	 */
+	public synchronized void setColorPast( final int colorPast )
+	{
+		if ( this.colorPast != colorPast )
+		{
+			this.colorPast = colorPast;
+			notifyListeners();
+		}
+	}
+
+	/**
+	 * Returns the color used to paint links in the future time-points.
+	 * 
+	 * @return the color used to paint links in the future time-points.
+	 */
+	public int getColorFuture()
+	{
+		return colorFuture;
+	}
+
+	/**
+	 * Sets the color used to paint links in the future time-points.
+	 * 
+	 * @param colorFuture
+	 *            the color used to paint links in the future time-points.
+	 */
+	public synchronized void setColorFuture( final int colorFuture )
+	{
+		if ( this.colorFuture != colorFuture )
+		{
+			this.colorFuture = colorFuture;
+			notifyListeners();
+		}
+	}
+
 	/*
 	 * DEFAULTS RENDER SETTINGS LIBRARY.
 	 */
@@ -711,6 +878,8 @@ public class RenderSettings implements Style< RenderSettings >
 		df.useGradient = DEFAULT_USE_GRADIENT;
 		df.timeLimit = DEFAULT_LIMIT_TIME_RANGE;
 		df.drawLinks = DEFAULT_DRAW_LINKS;
+		df.drawLinksAheadInTime = DEFAULT_DRAW_LINKS_AHEAD_IN_TIME;
+		df.drawArrowHeads = DEFAULT_DRAW_ARROW_HEADS;
 		df.drawSpots = DEFAULT_DRAW_SPOTS;
 		df.drawEllipsoidSliceProjection = DEFAULT_DRAW_SLICE_PROJECTION;
 		df.drawEllipsoidSliceIntersection = DEFAULT_DRAW_SLICE_INTERSECTION;
@@ -720,6 +889,9 @@ public class RenderSettings implements Style< RenderSettings >
 		df.focusLimit = DEFAULT_LIMIT_FOCUS_RANGE;
 		df.isFocusLimitViewRelative = DEFAULT_IS_FOCUS_LIMIT_RELATIVE;
 		df.ellipsoidFadeDepth = DEFAULT_ELLIPSOID_FADE_DEPTH;
+		df.colorSpot = DEFAULT_COLOR_SPOT_AND_PRESENT;
+		df.colorPast = DEFAULT_COLOR_PAST;
+		df.colorFuture = DEFAULT_COLOR_FUTURE;
 		df.name = "Default";
 	}
 

@@ -29,12 +29,16 @@
 package org.mastodon.views.bdv.overlay.ui;
 
 import static org.mastodon.app.ui.settings.StyleElements.booleanElement;
+import static org.mastodon.app.ui.settings.StyleElements.colorElement;
 import static org.mastodon.app.ui.settings.StyleElements.doubleElement;
 import static org.mastodon.app.ui.settings.StyleElements.intElement;
 import static org.mastodon.app.ui.settings.StyleElements.linkedCheckBox;
+import static org.mastodon.app.ui.settings.StyleElements.linkedColorButton;
 import static org.mastodon.app.ui.settings.StyleElements.linkedSliderPanel;
 import static org.mastodon.app.ui.settings.StyleElements.separator;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -42,13 +46,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.mastodon.app.ui.settings.StyleElements.BooleanElement;
+import org.mastodon.app.ui.settings.StyleElements.ColorElement;
 import org.mastodon.app.ui.settings.StyleElements.DoubleElement;
 import org.mastodon.app.ui.settings.StyleElements.IntElement;
 import org.mastodon.app.ui.settings.StyleElements.Separator;
@@ -56,18 +63,25 @@ import org.mastodon.app.ui.settings.StyleElements.StyleElement;
 import org.mastodon.app.ui.settings.StyleElements.StyleElementVisitor;
 import org.mastodon.views.bdv.overlay.RenderSettings;
 
+import bdv.tools.brightness.SliderPanel;
+import bdv.tools.brightness.SliderPanelDouble;
+
 public class RenderSettingsPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 
 	private static final int tfCols = 4;
 
+	private static final Dimension SLIDER_PREFERRED_DIM = new Dimension( 50, 30 );
+
+	private final JColorChooser colorChooser;
+
 	private final List< StyleElement > styleElements;
 
 	public RenderSettingsPanel( final RenderSettings style )
 	{
 		super( new GridBagLayout() );
-
+		colorChooser = new JColorChooser();
 		styleElements = styleElements( style );
 
 		style.updateListeners().add( () -> {
@@ -106,16 +120,30 @@ public class RenderSettingsPanel extends JPanel
 					@Override
 					public void visit( final DoubleElement element )
 					{
+						final SliderPanelDouble slider = linkedSliderPanel( element, tfCols );
+						slider.setPreferredSize( SLIDER_PREFERRED_DIM );
 						addToLayout(
-								linkedSliderPanel( element, tfCols ),
+								slider,
 								new JLabel( element.getLabel() ) );
 					}
 
 					@Override
 					public void visit( final IntElement element )
 					{
+						final SliderPanel slider = linkedSliderPanel( element, tfCols );
+						slider.setPreferredSize( SLIDER_PREFERRED_DIM );
 						addToLayout(
-								linkedSliderPanel( element, tfCols ),
+								slider,
+								new JLabel( element.getLabel() ) );
+					}
+
+					@Override
+					public void visit( final ColorElement element )
+					{
+						final JButton button = linkedColorButton( element, null, colorChooser );
+						button.setHorizontalAlignment( SwingConstants.RIGHT );
+						addToLayout(
+								button,
 								new JLabel( element.getLabel() ) );
 					}
 
@@ -141,9 +169,26 @@ public class RenderSettingsPanel extends JPanel
 
 				separator(),
 
+				colorElement(
+						"spot color",
+						() -> new Color( style.getColorSpot(), true ),
+						( c ) -> style.setColorSpot( c.getRGB() ) ),
+				colorElement(
+						"links backward in time",
+						() -> new Color( style.getColorPast(), true ),
+						( c ) -> style.setColorPast( c.getRGB() ) ),
+				colorElement(
+						"links ahead in time",
+						() -> new Color( style.getColorFuture(), true ),
+						( c ) -> style.setColorFuture( c.getRGB() ) ),
+
+				separator(),
+
 				booleanElement( "draw links", style::getDrawLinks, style::setDrawLinks ),
 				intElement( "time range for links", 0, 100, style::getTimeLimit, style::setTimeLimit ),
 				booleanElement( "gradients for links", style::getUseGradient, style::setUseGradient ),
+				booleanElement( "arrow heads", style::getDrawArrowHeads, style::setDrawArrowHeads ),
+				booleanElement( "draw links ahead in time", style::getDrawLinksAheadInTime, style::setDrawLinksAheadInTime ),
 
 				separator(),
 

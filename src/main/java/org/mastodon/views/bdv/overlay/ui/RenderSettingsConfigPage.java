@@ -69,12 +69,20 @@ public class RenderSettingsConfigPage extends SelectAndEditProfileSettingsPage< 
 
 		private final RenderSettings editedStyle;
 
-		private final RenderSettingsPanel styleEditorPanel;
+		private final JPanel styleEditorPanel;
+
+		private final DummyBdvPanel dummyModelCanvas;
 
 		public RenderSettingsProfileEditPanel( final RenderSettings initialStyle )
 		{
 			editedStyle = initialStyle.copy( "Edited" );
-			styleEditorPanel = new RenderSettingsPanel( editedStyle );
+			styleEditorPanel = new JPanel();
+			styleEditorPanel.setLayout( new BorderLayout() );
+			styleEditorPanel.add( new RenderSettingsPanel( editedStyle ), BorderLayout.CENTER );
+
+			this.dummyModelCanvas = new DummyBdvPanel();
+			dummyModelCanvas.setRenderSettings( initialStyle );
+			styleEditorPanel.add( dummyModelCanvas, BorderLayout.EAST );
 			modificationListeners = new Listeners.SynchronizedList<>();
 			editedStyle.updateListeners().add( this );
 		}
@@ -84,6 +92,7 @@ public class RenderSettingsConfigPage extends SelectAndEditProfileSettingsPage< 
 		@Override
 		public void renderSettingsChanged()
 		{
+			dummyModelCanvas.setRenderSettings( editedStyle );
 			if ( trackModifications )
 				modificationListeners.list.forEach( ModificationListener::modified );
 		}
