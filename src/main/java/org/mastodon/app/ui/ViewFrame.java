@@ -69,6 +69,8 @@ public class ViewFrame extends JFrame
 	{
 		super( windowTitle, AWTUtils.getSuitableGraphicsConfiguration( AWTUtils.RGB_COLOR_MODEL ) );
 		getRootPane().setDoubleBuffered( true );
+		setLocationByPlatform( true );
+		setLocationRelativeTo( null );
 
 		keybindings = new InputActionBindings();
 		triggerbindings = new TriggerBehaviourBindings();

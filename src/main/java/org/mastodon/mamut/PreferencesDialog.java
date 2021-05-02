@@ -57,6 +57,8 @@ public class PreferencesDialog extends JDialog
 			final String[] keyConfigContexts )
 	{
 		super( owner, "Preferences", false );
+		setLocationByPlatform( true );
+		setLocationRelativeTo( null );
 		settingsPanel = new SettingsPanel();
 		settingsPanel.onOk( () -> setVisible( false ) );
 		settingsPanel.onCancel( () -> setVisible( false ) );
@@ -91,7 +93,7 @@ public class PreferencesDialog extends JDialog
 	/**
 	 * Removes the settings page with the specified path. Does nothing if there is
 	 * not settings page for the path.
-	 * 
+	 *
 	 * @param path
 	 *                 the path of the settings page to remove.
 	 */

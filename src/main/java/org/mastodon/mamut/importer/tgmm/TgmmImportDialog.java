@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -49,15 +50,18 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
+
+import org.jdom2.JDOMException;
+import org.mastodon.app.MastodonIcons;
+import org.mastodon.mamut.model.Model;
+import org.mastodon.ui.util.FileChooser;
+
 import mpicbg.spim.data.generic.AbstractSpimData;
 import mpicbg.spim.data.generic.sequence.AbstractSequenceDescription;
 import mpicbg.spim.data.registration.ViewRegistrations;
 import mpicbg.spim.data.sequence.TimePoint;
 import mpicbg.spim.data.sequence.TimePoints;
 import mpicbg.spim.data.sequence.TimePointsPattern;
-import org.jdom2.JDOMException;
-import org.mastodon.mamut.model.Model;
-import org.mastodon.ui.util.FileChooser;
 
 public class TgmmImportDialog
 {
@@ -105,6 +109,9 @@ public class TgmmImportDialog
 		Dialog()
 		{
 			super( owner, true );
+			setIconImage( MastodonIcons.TGMM_IMPORT_ICON_MEDIUM.getImage() );
+			setLocationByPlatform( true );
+			setLocationRelativeTo( null );
 
 			final JPanel content = new JPanel();
 			getContentPane().add( content, BorderLayout.CENTER );
