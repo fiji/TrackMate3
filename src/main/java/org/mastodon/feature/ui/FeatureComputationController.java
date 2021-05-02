@@ -64,6 +64,8 @@ public class FeatureComputationController implements GraphChangeListener
 		this.computerService = computerService;
 		model = createModel( targets );
 		dialog = new JDialog( ( JFrame ) null, "Feature calculation" );
+		dialog.setLocationByPlatform( true );
+		dialog.setLocationRelativeTo( null );
 		gui = new FeatureComputationPanel( model, targets );
 		dialog.getContentPane().add( gui );
 		dialog.pack();

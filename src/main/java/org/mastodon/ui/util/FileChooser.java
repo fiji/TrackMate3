@@ -32,11 +32,14 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.awt.HeadlessException;
+import java.awt.Image;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
@@ -75,12 +78,35 @@ public class FileChooser
 	public static File chooseFile(
 			final Component parent,
 			final String selectedFile,
+			final XmlFileFilter fileFilter,
+			final String dialogTitle,
+			final DialogType dialogType,
+			final Image image )
+	{
+		return chooseFile( useJFileChooser, parent, selectedFile, fileFilter, dialogTitle, dialogType, SelectionMode.FILES_ONLY, image );
+	}
+
+	public static File chooseFile(
+			final Component parent,
+			final String selectedFile,
 			final FileFilter fileFilter,
 			final String dialogTitle,
 			final DialogType dialogType,
 			final SelectionMode selectionMode )
 	{
-		return chooseFile( useJFileChooser, parent, selectedFile, fileFilter, dialogTitle, dialogType, selectionMode );
+		return chooseFile( useJFileChooser, parent, selectedFile, fileFilter, dialogTitle, dialogType, selectionMode, null );
+	}
+
+	public static File chooseFile(
+			final boolean useJFileChooser,
+			final Component parent,
+			final String selectedFile,
+			final FileFilter fileFilter,
+			final String dialogTitle,
+			final DialogType dialogType,
+			final SelectionMode selectionMode )
+	{
+		return chooseFile( useJFileChooser, parent, selectedFile, fileFilter, dialogTitle, dialogType, selectionMode, null );
 	}
 
 	public static File chooseFile(
@@ -90,7 +116,8 @@ public class FileChooser
 			final FileFilter fileFilter,
 			final String dialogTitle,
 			final DialogType dialogType,
-			final SelectionMode selectionMode )
+			final SelectionMode selectionMode,
+			final Image iconImage )
 	{
 		final boolean isSaveDialog = ( dialogType == DialogType.SAVE );
 		final boolean isDirectoriesOnly = ( selectionMode == SelectionMode.DIRECTORIES_ONLY );
@@ -115,7 +142,19 @@ public class FileChooser
 		File file = null;
 		if ( useJFileChooser )
 		{
-			final JFileChooser fileChooser = new JFileChooser();
+			final JFileChooser fileChooser = new JFileChooser()
+			{
+
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				protected JDialog createDialog( final Component parent ) throws HeadlessException
+				{
+					final JDialog dialog = super.createDialog( parent );
+					dialog.setIconImage( iconImage );
+					return dialog;
+				}
+			};
 
 			fileChooser.setDialogTitle( title );
 
@@ -158,6 +197,8 @@ public class FileChooser
 				fd = new FileDialog( ( Dialog ) parent, title, fdMode );
 			else
 				fd = new FileDialog( ( Frame ) null, title, fdMode );
+
+			fd.setIconImage( iconImage );
 
 			/*
 			 * If a selectedFile path was provided, set it.

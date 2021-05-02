@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>Simi-BioCell importer</title></head>
+<body style="font-family:Arial"><h1>Simi-BioCell importer.</h1>
+<p>Here you can import Simi-BioCell files as a new Mastodon project.</p>
+<p><img src='Mastodon_LauncherGUI_ImportSimi.png' alt='Simi-BioCell importer panel' /></p>
+<h2>Simi-BioCell files description.</h2>
+<p>Simi-BioCell files are normally shipped as a pair of <code>sbc/sbd</code> files, but we need only the <code>sbd</code> file for import. Both are text files. The <code>sbc</code> file starts with something like this:</p>
+<pre><code>;***** SIMI∞BioCell *****
+
+;data file description
+
+[BIOCELL]
+FILETYPE=DATA
+FILEVERSION=400
+[DISC]
+DISCNAME=Harddisk
+</code></pre>
+<p>and the <code>sbd</code> file starts with: </p>
+<pre><code>SIMI*BIOCELL
+400
+---
+0
+---
+1 1
+0
+---
+1 1 0 0 X
+-6000 0 -1 -1
+-5 0 -1 -1 -1 6776679
+0
+---
+1 1 0 0 X?
+0 0 -1 -1
+0 0 -1 -1 -1 6776679
+0
+---
+</code></pre>
+<h2>Import procedure.</h2>
+<p>The BDV file format is made of a pair of <code>xml/h5</code> files. </p>
+<p>First browse to a BDV file by clicking on the first browse button or entering the full path to the XML file into the first text area. The information area at the bottom should display some information gathered from the BDV File. </p>
+<p>The <code>Transform of setup</code> drop-down list should now be enabled and show the names of the views found in the BDV file. Select the view on which the Simi-BioCell analysis was run.</p>
+<p>Then,  browse to a SBD file,  by clicking on the second browse button or entering the full path to the SBD file into the second text area. </p>
+<p>The <code>Time offset</code> entry lets you specify whether there is an offset in time, regarding the frames of the image stored in the BDV file, and the time-points reported in the Simi-BioCell file. A time offset equals to <code>2</code> means that the data stored in the Simi-BioCell file at time-point <code>2</code> is to be displayed at the frame <code>0</code> of the image data.</p>
+<p>The <code>Interpolate missing time-points</code> allow to create spots for missing frames union import. If for instance the Simi-BioCell data contains a spot in time-point 0 linked to a spot in time-point 5, spots will be added at frames 1, 2, 3 and 4, with their position linearly interpolated between spots at time-points 0 and 5.</p>
+<p>The <code>Spot radius</code> field allows for specifying the imported spot radius, in the physical units specified in the BDV file.</p>
+<h2>Troubleshooting.</h2>
+<p>Fi the image data appears not to be aligned with the lineage data, checks whether you specified the right view in the <code>Transform of setup</code> drop-down list.</p>
+<p>Then checks whether there should be a time-offset to be entered in the <code>Time offset</code> field.</p>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -92,6 +92,8 @@ public class TagSetDialog extends JDialog
 				undoPointMarker.setUndoPoint();
 			}
 		} );
+		setLocationByPlatform( true );
+		setLocationRelativeTo( null );
 		model.listeners().add( () -> tagSetPanel.setTagSetStructure( manager.getTagSetStructure() ) );
 
 		final ActionMap am = getRootPane().getActionMap();

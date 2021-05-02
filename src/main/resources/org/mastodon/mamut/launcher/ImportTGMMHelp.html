@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>TGMM importer</title></head>
+<body style="font-family:Arial"><h1>TGMM importer.</h1>
+<p>This panel lets you import the lineage data generated with the TGMM (Tracking with Gaussian Mixture Models) software tool. For information about TGMM, read the following paper:</p>
+<p>Amat F, Lemon W, Mossing DP, McDole K, Wan Y, Branson K, Myers EW, Keller PJ. <em>Fast, accurate reconstruction of cell lineages from large-scale fluorescence microscopy data.</em> <a href='https://www.nature.com/articles/nmeth.3036'>Nature Methods. <strong>2014</strong>;11:951. doi: 10.1038/nmeth.3036</a></p>
+<h2>The TGMM file structure.</h2>
+<p>TGMM outputs a folder containing one XML file per time-point. For instance:</p>
+<pre><code class='language-shell' lang='shell'>tinevez@lilium:~/Development/Mastodon/TrackMate3$ ls -1  ~/Projects/JYTinevez/MaMuT/Mastodon-dataset/TGMM_TL0-9/
+GMEMfinalResult_frame0000.xml
+GMEMfinalResult_frame0001.xml
+GMEMfinalResult_frame0002.xml
+GMEMfinalResult_frame0003.xml
+GMEMfinalResult_frame0004.xml
+GMEMfinalResult_frame0005.xml
+GMEMfinalResult_frame0006.xml
+GMEMfinalResult_frame0007.xml
+GMEMfinalResult_frame0008.xml
+GMEMfinalResult_frame0009.xml
+</code></pre>
+<p>Each XML file contains the lineage data, linking to TGMM file in previous time-points if needed. A TGMM file starts like this:</p>
+<pre><code class='language-xml' lang='xml'>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;document&gt;
+&lt;GaussianMixtureModel id=&quot;0&quot; lineage=&quot;0&quot; parent=&quot;-1&quot; dims=&quot;3&quot; splitScore=&quot;0&quot; scale=&quot;1 1 1 &quot;
+nu=&quot;38.2708&quot; beta=&quot;38.2708&quot; alpha=&quot;38.2708&quot; m=&quot;855.173 507.877 806.944 &quot; W=&quot;0.00340707 0.00209769 0 0.00209769 0.00397173 0 0 0 0.00410872 &quot;
+nuPrior=&quot;4&quot; betaPrior=&quot;-1&quot; alphaPrior=&quot;0&quot; distMRFPrior=&quot;0&quot; mPrior=&quot;855.173 507.877 806.944 &quot; WPrior=&quot;0.0325978 0.02007 0 0.02007 0.0380002 0 0 0 0.039311 &quot; svIdx=&quot;51 &quot;&gt;
+&lt;/GaussianMixtureModel&gt;
+&lt;GaussianMixtureModel id=&quot;1&quot; lineage=&quot;1&quot; parent=&quot;-1&quot; dims=&quot;3&quot; splitScore=&quot;0&quot; scale=&quot;1 1 1 &quot;
+nu=&quot;5.16494&quot; beta=&quot;5.16494&quot; alpha=&quot;5.16494&quot; m=&quot;908.81 580.504 433.433 &quot; W=&quot;0.0212964 0.000765177 0 0.000765177 0.00999115 0 0 0 0.0430209 &quot;
+nuPrior=&quot;4&quot; betaPrior=&quot;-1&quot; alphaPrior=&quot;0&quot; distMRFPrior=&quot;0&quot; mPrior=&quot;908.81 580.504 433.433 &quot; WPrior=&quot;0.0274986 0.000988023 0 0.000988023 0.0129009 0 0 0 0.05555 &quot; svIdx=&quot;58 &quot;&gt;
+&lt;/GaussianMixtureModel&gt;
+&lt;GaussianMixtureModel id=&quot;2&quot; lineage=&quot;2&quot; parent=&quot;-1&quot; dims=&quot;3&quot; splitScore=&quot;0&quot; scale=&quot;1 1 1 &quot;
+nu=&quot;18.7463&quot; beta=&quot;18.7463&quot; alpha=&quot;18.7463&quot; m=&quot;825.041 691.186 715.285 &quot; W=&quot;0.00913546 0.00335316 0 0.00335316 0.00771559 0 0 0 0.011853 &quot;
+nuPrior=&quot;4&quot; betaPrior=&quot;-1&quot; alphaPrior=&quot;0&quot; distMRFPrior=&quot;0&quot; mPrior=&quot;825.041 691.186 715.285 &quot; WPrior=&quot;0.042814 0.0157148 0 0.0157148 0.0361597 0 0 0 0.05555 &quot; svIdx=&quot;66 &quot;&gt;
+&lt;/GaussianMixtureModel&gt;
+
+</code></pre>
+<h2>Import procedure.</h2>
+<p><img src='Mastodon_LauncherGUI_ImportTGMM.png' alt='TGMM importer panel'  /></p>
+<p>The BDV file format is made of a pair of <code>xml/h5</code> files. </p>
+<p>First browse to a BDV file by clicking on the first browse button or entering the full path to the XML file into the first text area. The information area at the bottom should display some information gathered from the BDV File. </p>
+<p>The <code>Transform of setup</code> drop-down list should now be enabled and show the names of the views found in the BDV file. Select the view on which the TGMM analysis was run.</p>
+<p>Also: The <code>Timepoint pattern</code> field will be updated with the time-point information found in the BDV file. For instance, if there is 10 time-points starting from 0 in the file, the time-point pattern will be updated with the text <code>0-9</code>. The syntax for this pattern lets you handle various cases. It must be enumerations separated by commas, and each entry can be a single number, a range (<em>e.g.</em> <code>4-100</code>) or a range in intervals (<em>e.g</em>. <code>0-30:10</code> - which is equivalent to <code>0,10,20,30</code>).</p>
+<p>You must now browse to a <strong>folder</strong> containing the TGMM files. There can be other files in the TGMM folder, but the TGMM files name should follow the pattern specified in the <code>Filename pattern</code> field. This field contains default naming that should work.</p>
+<p>The importer will check whether it can find all the TGMM files, based on the file-name pattern entered in the <code>Filename pattern</code> field and the time-point pattern specified in the  <code>Timepoint pattern</code> field. For instance, if the time-point pattern is t <code>0-10</code>, but only TGMM files ranging from 0 to 9 can be found, the following warning will be displayed:</p>
+<pre><code>- Cannot find file /Users/tinevez/Projects/JYTinevez/MaMuT/Mastodon-dataset/TGMM_TL0-9/GMEMfinalResult_frame0010.xml in the TGMM folder.
+Found 10 files matching the TGMM filename and timepoint patterns in folder.
+</code></pre>
+<p>If the <code>Set covariance</code> checkbox is selected, the importer will override the covariance found in the TGMM file with a fixed value, specified in the field next to the checkbox. </p>
+<p>The <code>Covariance scale</code> allows to specify how to convert from covariance to ellipsoid size. It is in unit of sigmas of the gaussian mixture. The default value of 2 is reasonable if you did not scale the image data.</p>
+<p>&nbsp;</p>
+</body>
+</html>
