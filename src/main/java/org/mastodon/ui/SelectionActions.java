@@ -64,15 +64,22 @@ import org.scijava.ui.behaviour.util.Actions;
  */
 public class SelectionActions< V extends Vertex< E >, E extends Edge< V > >
 {
+
 	public static final String DELETE_SELECTION = "delete selection";
 	public static final String SELECT_WHOLE_TRACK = "select whole track";
 	public static final String SELECT_TRACK_DOWNWARD = "select track downward";
 	public static final String SELECT_TRACK_UPWARD = "select track upward";
+	public static final String SELECT_ALL = "select all";
+	public static final String SELECT_ALL_EDGES = "select all links";
+	public static final String SELECT_ALL_VERTICES = "select all spots";
 
 	public static final String[] DELETE_SELECTION_KEYS = new String[] { "shift DELETE" };
 	public static final String[] SELECT_WHOLE_TRACK_KEYS = new String[] { "shift SPACE" };
 	public static final String[] SELECT_TRACK_DOWNWARD_KEYS = new String[] { "shift PAGE_DOWN" };
 	public static final String[] SELECT_TRACK_UPWARD_KEYS = new String[] { "shift PAGE_UP" };
+	public static final String[] SELECT_ALL_KEYS = new String[] { "ctrl A", "meta A" };
+	public static final String[] SELECT_ALL_EDGES_KEYS = new String[] { "ctrl shift A", "meta shift A" };
+	public static final String[] SELECT_ALL_VERTICES_KEYS = new String[] { "ctrl alt  A", "meta alt A" };
 
 	/*
 	 * Command descriptions for all provided commands
@@ -92,6 +99,9 @@ public class SelectionActions< V extends Vertex< E >, E extends Edge< V > >
 			descriptions.add( SELECT_WHOLE_TRACK, SELECT_WHOLE_TRACK_KEYS, "Select the whole track of the current spot." );
 			descriptions.add( SELECT_TRACK_DOWNWARD, SELECT_TRACK_DOWNWARD_KEYS, "Select the track downward from the current spot." );
 			descriptions.add( SELECT_TRACK_UPWARD, SELECT_TRACK_UPWARD_KEYS, "Select the track upward form the current spot." );
+			descriptions.add( SELECT_ALL, SELECT_ALL_KEYS, "Select all spots and links." );
+			descriptions.add( SELECT_ALL_VERTICES, SELECT_ALL_VERTICES_KEYS, "Select all spots." );
+			descriptions.add( SELECT_ALL_EDGES, SELECT_ALL_EDGES_KEYS, "Select all links." );
 		}
 	}
 
@@ -131,6 +141,9 @@ public class SelectionActions< V extends Vertex< E >, E extends Edge< V > >
 		actions.namedAction( sa.selectWholeTrackAction, SELECT_WHOLE_TRACK_KEYS );
 		actions.namedAction( sa.selectTrackDownwardAction, SELECT_TRACK_DOWNWARD_KEYS );
 		actions.namedAction( sa.selectTrackUpwardAction, SELECT_TRACK_UPWARD_KEYS );
+		actions.namedAction( sa.selectAllAction, SELECT_ALL_KEYS );
+		actions.namedAction( sa.selectAllVerticesAction, SELECT_ALL_VERTICES_KEYS );
+		actions.namedAction( sa.selectAllEdgesAction, SELECT_ALL_EDGES_KEYS );
 	}
 
 	private final Graph< V, E > graph;
@@ -151,6 +164,12 @@ public class SelectionActions< V extends Vertex< E >, E extends Edge< V > >
 
 	private final TrackSelectionAction selectTrackUpwardAction;
 
+	private final SelectAllAction selectAllAction;
+
+	private final SelectAllAction selectAllVerticesAction;
+
+	private final SelectAllAction selectAllEdgesAction;
+
 	private SelectionActions(
 			final Graph< V, E > graph,
 			final ReentrantReadWriteLock lock,
@@ -167,6 +186,9 @@ public class SelectionActions< V extends Vertex< E >, E extends Edge< V > >
 		selectWholeTrackAction = new TrackSelectionAction( SELECT_WHOLE_TRACK, SearchDirection.UNDIRECTED );
 		selectTrackDownwardAction = new TrackSelectionAction( SELECT_TRACK_DOWNWARD, SearchDirection.DIRECTED );
 		selectTrackUpwardAction = new TrackSelectionAction( SELECT_TRACK_UPWARD, SearchDirection.REVERSED );
+		selectAllAction = new SelectAllAction( SELECT_ALL, true, true);
+		selectAllVerticesAction = new SelectAllAction( SELECT_ALL_VERTICES, true, false);
+		selectAllEdgesAction = new SelectAllAction( SELECT_ALL_EDGES, false, true);
 	}
 
 	class DeleteSelectionAction	extends AbstractNamedAction
@@ -285,6 +307,44 @@ public class SelectionActions< V extends Vertex< E >, E extends Edge< V > >
 			finally
 			{
 				lock.writeLock().unlock();
+			}
+		}
+	}
+
+	class SelectAllAction extends AbstractNamedAction
+	{
+
+		private static final long serialVersionUID = 1L;
+
+		private final boolean selectVertices;
+
+		private final boolean selectEdges;
+
+		public SelectAllAction( final String name, final boolean selectVertices, final boolean selectEdges )
+		{
+			super( name );
+			this.selectVertices = selectVertices;
+			this.selectEdges = selectEdges;
+		}
+
+		@Override
+		public void actionPerformed( final ActionEvent e )
+		{
+			lock.readLock().lock();
+			try
+			{
+				selection.pauseListeners();
+				selection.clearSelection();
+				if (selectVertices)
+					selection.setVerticesSelected( graph.vertices(), true );
+				if (selectEdges)
+					selection.setEdgesSelected( graph.edges(), true );
+
+			}
+			finally
+			{
+				selection.resumeListeners();
+				lock.readLock().unlock();
 			}
 		}
 	}

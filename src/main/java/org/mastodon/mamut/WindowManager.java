@@ -263,6 +263,7 @@ public class WindowManager
 		final Model model = appModel.getModel();
 		UndoActions.install( appModel.getAppActions(), model );
 		SelectionActions.install( appModel.getAppActions(), model.getGraph(), model.getGraph().getLock(), model.getGraph(), appModel.getSelectionModel(), model );
+		MamutActions.install( appModel.getAppActions(), appModel );
 
 		final Keymap keymap = keymapManager.getForwardDefaultKeymap();
 		tagSetDialog = new TagSetDialog( null, model.getTagSetModel(), model, keymap, new String[] { KeyConfigContexts.MASTODON } );
