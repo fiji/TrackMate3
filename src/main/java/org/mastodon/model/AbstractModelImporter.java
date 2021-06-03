@@ -48,8 +48,13 @@ public abstract class AbstractModelImporter< M extends AbstractModel< ?, ?, ? > 
 
 	protected void startImport()
 	{
-		model.modelGraph.pauseListeners();
+		startUpdate();
 		model.modelGraph.clear();
+	}
+
+	protected void startUpdate()
+	{
+		model.modelGraph.pauseListeners();
 	}
 
 	protected void finishImport()
