@@ -238,7 +238,7 @@ public class RenderSettingsIO
 				s.setFocusLimit( ( double ) mapping.getOrDefault( "focusLimit", RenderSettings.DEFAULT_LIMIT_FOCUS_RANGE ) );
 				s.setFocusLimitViewRelative( ( boolean ) mapping.getOrDefault( "focusLimitViewRelative", RenderSettings.DEFAULT_IS_FOCUS_LIMIT_RELATIVE ) );
 				s.setEllipsoidFadeDepth( ( double ) mapping.getOrDefault( "ellipsoidFadeDepth", RenderSettings.DEFAULT_ELLIPSOID_FADE_DEPTH ) );
-				s.setPointFadeDepth( ( double ) mapping.getOrDefault( "pointFadeDepth", RenderSettings.DEFAULT_ELLIPSOID_FADE_DEPTH ) );
+				s.setPointFadeDepth( ( double ) mapping.getOrDefault( "pointFadeDepth", RenderSettings.DEFAULT_POINT_FADE_DEPTH ) );
 				s.setColorSpot( ( int ) mapping.getOrDefault( "colorSpot", RenderSettings.DEFAULT_COLOR_SPOT_AND_PRESENT ) );
 				s.setColorPast( ( int ) mapping.getOrDefault( "colorPast", RenderSettings.DEFAULT_COLOR_PAST ) );
 				s.setColorFuture( ( int ) mapping.getOrDefault( "colorFuture", RenderSettings.DEFAULT_COLOR_FUTURE ) );

@@ -58,6 +58,7 @@ public class RenderSettings implements Style< RenderSettings >
 	public static final boolean DEFAULT_DRAW_SPOT_LABELS = false;
 	public static final boolean DEFAULT_IS_FOCUS_LIMIT_RELATIVE = true;
 	public static final double DEFAULT_ELLIPSOID_FADE_DEPTH = 0.2;
+	public static final double DEFAULT_POINT_FADE_DEPTH = 0.;
 	public static final int DEFAULT_COLOR_SPOT_AND_PRESENT = Color.GREEN.getRGB();
 	public static final int DEFAULT_COLOR_PAST = Color.RED.getRGB();
 	public static final int DEFAULT_COLOR_FUTURE = Color.BLUE.getRGB();
@@ -889,6 +890,7 @@ public class RenderSettings implements Style< RenderSettings >
 		df.focusLimit = DEFAULT_LIMIT_FOCUS_RANGE;
 		df.isFocusLimitViewRelative = DEFAULT_IS_FOCUS_LIMIT_RELATIVE;
 		df.ellipsoidFadeDepth = DEFAULT_ELLIPSOID_FADE_DEPTH;
+		df.pointFadeDepth = DEFAULT_POINT_FADE_DEPTH;
 		df.colorSpot = DEFAULT_COLOR_SPOT_AND_PRESENT;
 		df.colorPast = DEFAULT_COLOR_PAST;
 		df.colorFuture = DEFAULT_COLOR_FUTURE;
