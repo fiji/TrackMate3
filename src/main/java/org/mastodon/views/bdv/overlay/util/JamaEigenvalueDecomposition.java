@@ -88,6 +88,11 @@ public class JamaEigenvalueDecomposition
    */
    private final double[] ort;
 
+   /** Sort flag.
+   @serial internal sort flag.
+   */
+   private boolean issort;
+
 /* ------------------------
    Private Methods
  * ------------------------ */
@@ -306,27 +311,32 @@ public class JamaEigenvalueDecomposition
          e[l] = 0.0;
       }
 
-      // Sort eigenvalues and corresponding vectors.
+      if ( issort ) {
 
-      for (int i = 0; i < n-1; i++) {
-         int k = i;
-         double p = d[i];
-         for (int j = i+1; j < n; j++) {
-            if (d[j] < p) {
-               k = j;
-               p = d[j];
-            }
-         }
-         if (k != i) {
-            d[k] = d[i];
-            d[i] = p;
-            for (int j = 0; j < n; j++) {
-               p = V[j][i];
-               V[j][i] = V[j][k];
-               V[j][k] = p;
-            }
-         }
-      }
+          // Sort eigenvalues and corresponding vectors.
+    	  // eigenvalues (non-absolute) are sorted in ascending order
+    	  // accompanied by its corresponding eigenvectors.
+
+          for (int i = 0; i < n-1; i++) {
+             int k = i;
+             double p = d[i];
+             for (int j = i+1; j < n; j++) {
+                if (d[j] < p) {
+                   k = j;
+                   p = d[j];
+                }
+             }
+             if (k != i) {
+                d[k] = d[i];
+                d[i] = p;
+                for (int j = 0; j < n; j++) {
+                   p = V[j][i];
+                   V[j][i] = V[j][k];
+                   V[j][k] = p;
+                }
+             }
+          }
+       }
    }
 
    // Nonsymmetric reduction to Hessenberg form.
@@ -891,18 +901,36 @@ public class JamaEigenvalueDecomposition
 
    	/**
 	 * Check for symmetry, then construct the eigenvalue decomposition Structure
-	 * to access D and V.
+	 * to access D and V. Sort eigenvalues and corresponding vectors.
+	 * eigenvalues (non-absolute) are sorted in ascending order accompanied by
+	 * its corresponding eigenvectors.
 	 *
 	 * @param numDimensions
 	 *            the dimensionality of the problem (size of the square matrix).
 	 */
    public JamaEigenvalueDecomposition( final int numDimensions ) {
+      this( numDimensions, true );
+   }
+
+   /**
+	 * Check for symmetry, then construct the eigenvalue decomposition Structure
+	 * to access D and V.
+	 *
+	 * @param numDimensions
+	 *            the dimensionality of the problem (size of the square matrix).
+	 * @param issort
+	 *            sort eigenvalues and corresponding vectors if true.
+	 *            eigenvalues (non-absolute) are sorted in ascending order
+	 *            accompanied by its corresponding eigenvectors.
+	 */
+   public JamaEigenvalueDecomposition( final int numDimensions, final boolean issort ) {
       n = numDimensions;
       V = new double[ n ][ n ];
       d = new double[ n ];
       e = new double[ n ];
-      H = new double[n][n];
-      ort = new double[n];
+      H = new double[ n ][ n ];
+      ort = new double[ n ];
+      this.issort = issort;
    }
 
    public void decomposeSymmetric( final double[][] A ) {
