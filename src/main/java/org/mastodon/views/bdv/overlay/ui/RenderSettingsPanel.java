@@ -189,6 +189,7 @@ public class RenderSettingsPanel extends JPanel
 				booleanElement( "gradients for links", style::getUseGradient, style::setUseGradient ),
 				booleanElement( "arrow heads", style::getDrawArrowHeads, style::setDrawArrowHeads ),
 				booleanElement( "draw links ahead in time", style::getDrawLinksAheadInTime, style::setDrawLinksAheadInTime ),
+				doubleElement( "link stroke width", 1, 100, style::getLinkStrokeWidth, style::setLinkStrokeWidth ),
 
 				separator(),
 
@@ -198,6 +199,7 @@ public class RenderSettingsPanel extends JPanel
 				booleanElement( "draw spot centers", style::getDrawSpotCenters, style::setDrawSpotCenters ),
 				booleanElement( "draw spot centers for ellipses", style::getDrawSpotCentersForEllipses, style::setDrawSpotCentersForEllipses ),
 				booleanElement( "draw spot labels", style::getDrawSpotLabels, style::setDrawSpotLabels ),
+				doubleElement( "spot stroke width", 1, 100, style::getSpotStrokeWidth, style::setSpotStrokeWidth ),
 
 				separator(),
 

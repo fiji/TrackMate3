@@ -58,6 +58,8 @@ public class RenderSettings implements Style< RenderSettings >
 	public static final boolean DEFAULT_DRAW_SPOT_LABELS = false;
 	public static final boolean DEFAULT_IS_FOCUS_LIMIT_RELATIVE = true;
 	public static final double DEFAULT_ELLIPSOID_FADE_DEPTH = 0.2;
+	public static final double DEFAULT_SPOT_STROKE_WIDTH = 1.0;
+	public static final double DEFAULT_LINK_STROKE_WIDTH = 1.0;
 	public static final int DEFAULT_COLOR_SPOT_AND_PRESENT = Color.GREEN.getRGB();
 	public static final int DEFAULT_COLOR_PAST = Color.RED.getRGB();
 	public static final int DEFAULT_COLOR_FUTURE = Color.BLUE.getRGB();
@@ -116,6 +118,8 @@ public class RenderSettings implements Style< RenderSettings >
 		isFocusLimitViewRelative = settings.isFocusLimitViewRelative;
 		ellipsoidFadeDepth = settings.ellipsoidFadeDepth;
 		pointFadeDepth = settings.pointFadeDepth;
+		spotStrokeWidth = settings.spotStrokeWidth;
+		linkStrokeWidth = settings.linkStrokeWidth;
 		colorSpot = settings.colorSpot;
 		colorPast = settings.colorPast;
 		colorFuture = settings.colorFuture;
@@ -254,6 +258,16 @@ public class RenderSettings implements Style< RenderSettings >
 	 * they are fully opaque, then their alpha value goes to 0 linearly.
 	 */
 	private double pointFadeDepth;
+
+	/**
+	 * The stroke with of spots.
+	 */
+	private double spotStrokeWidth;
+	
+	/**
+	 * The stroke with of links.
+	 */
+	private double linkStrokeWidth;
 
 	/**
 	 * The color used to paint spots and links in the current time-point.
@@ -789,6 +803,56 @@ public class RenderSettings implements Style< RenderSettings >
 	}
 
 	/**
+	 * Get stroke width for spots.
+	 *
+	 * @return stroke width for spots.
+	 */
+	public double getSpotStrokeWidth()
+	{
+		return spotStrokeWidth;
+	}
+
+	/**
+	 * Set stroke width for spots.
+	 *
+	 * @param spotStrokeWidth
+	 *            stroke width for spots.
+	 */
+	public void setSpotStrokeWidth( final double spotStrokeWidth )
+	{
+		if ( this.spotStrokeWidth != spotStrokeWidth )
+		{
+			this.spotStrokeWidth = spotStrokeWidth;
+			notifyListeners();
+		}
+	}
+
+	/**
+	 * Get stroke width for links.
+	 *
+	 * @return stroke width for links.
+	 */
+	public double getLinkStrokeWidth()
+	{
+		return linkStrokeWidth;
+	}
+
+	/**
+	 * Set stroke width for links.
+	 *
+	 * @param linkStrokeWidth
+	 *            stroke width for links.
+	 */
+	public void setLinkStrokeWidth( final double linkStrokeWidth )
+	{
+		if ( this.linkStrokeWidth != linkStrokeWidth )
+		{
+			this.linkStrokeWidth = linkStrokeWidth;
+			notifyListeners();
+		}
+	}
+
+	/**
 	 * Returns the color used to paint spots and links in the current
 	 * time-point.
 	 * 
@@ -889,6 +953,8 @@ public class RenderSettings implements Style< RenderSettings >
 		df.focusLimit = DEFAULT_LIMIT_FOCUS_RANGE;
 		df.isFocusLimitViewRelative = DEFAULT_IS_FOCUS_LIMIT_RELATIVE;
 		df.ellipsoidFadeDepth = DEFAULT_ELLIPSOID_FADE_DEPTH;
+		df.spotStrokeWidth = DEFAULT_SPOT_STROKE_WIDTH;
+		df.linkStrokeWidth = DEFAULT_LINK_STROKE_WIDTH;
 		df.colorSpot = DEFAULT_COLOR_SPOT_AND_PRESENT;
 		df.colorPast = DEFAULT_COLOR_PAST;
 		df.colorFuture = DEFAULT_COLOR_FUTURE;

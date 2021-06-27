@@ -195,6 +195,8 @@ public class RenderSettingsIO
 			mapping.put( "focusLimitViewRelative", s.getFocusLimitViewRelative() );
 			mapping.put( "ellipsoidFadeDepth", s.getEllipsoidFadeDepth() );
 			mapping.put( "pointFadeDepth", s.getPointFadeDepth() );
+			mapping.put( "spotStrokeWidth", s.getSpotStrokeWidth() );
+			mapping.put( "linkStrokeWidth", s.getLinkStrokeWidth() );
 			mapping.put( "colorSpot", s.getColorSpot() );
 			mapping.put( "colorPast", s.getColorPast() );
 			mapping.put( "colorFuture", s.getColorFuture() );
@@ -239,6 +241,8 @@ public class RenderSettingsIO
 				s.setFocusLimitViewRelative( ( boolean ) mapping.getOrDefault( "focusLimitViewRelative", RenderSettings.DEFAULT_IS_FOCUS_LIMIT_RELATIVE ) );
 				s.setEllipsoidFadeDepth( ( double ) mapping.getOrDefault( "ellipsoidFadeDepth", RenderSettings.DEFAULT_ELLIPSOID_FADE_DEPTH ) );
 				s.setPointFadeDepth( ( double ) mapping.getOrDefault( "pointFadeDepth", RenderSettings.DEFAULT_ELLIPSOID_FADE_DEPTH ) );
+				s.setSpotStrokeWidth( ( double ) mapping.getOrDefault( "spotStrokeWidth", RenderSettings.DEFAULT_SPOT_STROKE_WIDTH ) );
+				s.setLinkStrokeWidth( ( double ) mapping.getOrDefault( "linkStrokeWidth", RenderSettings.DEFAULT_LINK_STROKE_WIDTH ) );
 				s.setColorSpot( ( int ) mapping.getOrDefault( "colorSpot", RenderSettings.DEFAULT_COLOR_SPOT_AND_PRESENT ) );
 				s.setColorPast( ( int ) mapping.getOrDefault( "colorPast", RenderSettings.DEFAULT_COLOR_PAST ) );
 				s.setColorFuture( ( int ) mapping.getOrDefault( "colorFuture", RenderSettings.DEFAULT_COLOR_FUTURE ) );

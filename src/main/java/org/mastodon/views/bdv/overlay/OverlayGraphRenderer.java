@@ -545,10 +545,10 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 			return;
 
 		final Graphics2D graphics = ( Graphics2D ) g;
-		final BasicStroke defaultVertexStroke = new BasicStroke();
+		final BasicStroke defaultVertexStroke = new BasicStroke( ( float ) settings.getSpotStrokeWidth() );
 		final BasicStroke highlightedVertexStroke = new BasicStroke( 4f );
 		final BasicStroke focusedVertexStroke = new BasicStroke( 2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, new float[] { 8f, 3f }, 0 );
-		final BasicStroke defaultEdgeStroke = new BasicStroke();
+		final BasicStroke defaultEdgeStroke = new BasicStroke( ( float ) settings.getLinkStrokeWidth() );
 		final BasicStroke highlightedEdgeStroke = new BasicStroke( 3f );
 
 		final AffineTransform3D transform = getRenderTransformCopy();
