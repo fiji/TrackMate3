@@ -785,6 +785,11 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 
 	static void drawEllipse( final Graphics2D graphics, final Ellipse ellipse, AffineTransform torig )
 	{
+		drawEllipse( graphics, ellipse, torig, false );
+	}
+
+	static void drawEllipse( final Graphics2D graphics, final Ellipse ellipse, AffineTransform torig, final boolean fillSpots )
+	{
 		if ( torig == null )
 			torig = graphics.getTransform();
 
@@ -796,7 +801,18 @@ public class OverlayGraphRenderer< V extends OverlayVertex< V, E >, E extends Ov
 
 		graphics.translate( tr[ 0 ], tr[ 1 ] );
 		graphics.rotate( theta );
-		graphics.draw( ellipse2D );
+		if ( fillSpots )
+		{
+			graphics.fill( ellipse2D );
+			final Color color = graphics.getColor();
+			graphics.setColor( Color.BLACK );
+			graphics.draw( ellipse2D );
+			graphics.setColor( color );	
+		}
+		else
+		{
+			graphics.draw( ellipse2D );
+		}
 
 		graphics.setTransform( torig );
 	}

@@ -191,6 +191,7 @@ public class RenderSettingsIO
 			mapping.put( "drawSpotCenters", s.getDrawSpotCenters() );
 			mapping.put( "drawSpotCentersForEllipses", s.getDrawSpotCentersForEllipses() );
 			mapping.put( "drawSpotLabels", s.getDrawSpotLabels() );
+			mapping.put( "fillSpots", s.getFillSpots() );
 			mapping.put( "focusLimit", s.getFocusLimit() );
 			mapping.put( "focusLimitViewRelative", s.getFocusLimitViewRelative() );
 			mapping.put( "ellipsoidFadeDepth", s.getEllipsoidFadeDepth() );
@@ -235,6 +236,7 @@ public class RenderSettingsIO
 				s.setDrawSpotCenters( ( boolean ) mapping.getOrDefault( "drawSpotCenters", RenderSettings.DEFAULT_DRAW_POINTS ) );
 				s.setDrawSpotCentersForEllipses( ( boolean ) mapping.getOrDefault( "drawSpotCentersForEllipses", RenderSettings.DEFAULT_DRAW_POINTS_FOR_ELLIPSE ) );
 				s.setDrawSpotLabels( ( boolean ) mapping.getOrDefault( "drawSpotLabels", RenderSettings.DEFAULT_DRAW_SPOT_LABELS ) );
+				s.setFillSpots( ( boolean ) mapping.getOrDefault( "fillSpots", RenderSettings.DEFAULT_FILL_SPOTS ) );
 				s.setFocusLimit( ( double ) mapping.getOrDefault( "focusLimit", RenderSettings.DEFAULT_LIMIT_FOCUS_RANGE ) );
 				s.setFocusLimitViewRelative( ( boolean ) mapping.getOrDefault( "focusLimitViewRelative", RenderSettings.DEFAULT_IS_FOCUS_LIMIT_RELATIVE ) );
 				s.setEllipsoidFadeDepth( ( double ) mapping.getOrDefault( "ellipsoidFadeDepth", RenderSettings.DEFAULT_ELLIPSOID_FADE_DEPTH ) );

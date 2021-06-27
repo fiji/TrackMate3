@@ -56,6 +56,7 @@ public class RenderSettings implements Style< RenderSettings >
 	public static final boolean DEFAULT_DRAW_POINTS = !DEFAULT_DRAW_ELLIPSE || (DEFAULT_DRAW_ELLIPSE && DEFAULT_DRAW_SLICE_INTERSECTION);
 	public static final boolean DEFAULT_DRAW_POINTS_FOR_ELLIPSE = false;
 	public static final boolean DEFAULT_DRAW_SPOT_LABELS = false;
+	public static final boolean DEFAULT_FILL_SPOTS = false;
 	public static final boolean DEFAULT_IS_FOCUS_LIMIT_RELATIVE = true;
 	public static final double DEFAULT_ELLIPSOID_FADE_DEPTH = 0.2;
 	public static final int DEFAULT_COLOR_SPOT_AND_PRESENT = Color.GREEN.getRGB();
@@ -112,6 +113,7 @@ public class RenderSettings implements Style< RenderSettings >
 		drawPoints = settings.drawPoints;
 		drawPointsForEllipses = settings.drawPointsForEllipses;
 		drawSpotLabels = settings.drawSpotLabels;
+		fillSpots = settings.fillSpots;
 		focusLimit = settings.focusLimit;
 		isFocusLimitViewRelative = settings.isFocusLimitViewRelative;
 		ellipsoidFadeDepth = settings.ellipsoidFadeDepth;
@@ -204,6 +206,11 @@ public class RenderSettings implements Style< RenderSettings >
 	 * Whether to draw spot labels next to ellipses.
 	 */
 	private boolean drawSpotLabels;
+
+	/**
+	 * Whether to fill spots.
+	 */
+	private boolean fillSpots;
 
 	/**
 	 * Maximum distance from view plane up to which to draw spots.
@@ -649,6 +656,31 @@ public class RenderSettings implements Style< RenderSettings >
 	}
 
 	/**
+	 * Get whether spots are filled.
+	 *
+	 * @return whether spots are filled.
+	 */
+	public boolean getFillSpots()
+	{
+		return fillSpots;
+	}
+
+	/**
+	 * Set whether spots are filled.
+	 *
+	 * @param fillSpots
+	 *            whether spots are filled.
+	 */
+	public void setFillSpots( final boolean fillSpots )
+	{
+		if ( this.fillSpots != fillSpots )
+		{
+			this.fillSpots = fillSpots;
+			notifyListeners();
+		}
+	}
+
+	/**
 	 * Get the maximum distance from the view plane up to which to spots are
 	 * drawn.
 	 * <p>
@@ -886,6 +918,7 @@ public class RenderSettings implements Style< RenderSettings >
 		df.drawPoints = DEFAULT_DRAW_POINTS;
 		df.drawPointsForEllipses = DEFAULT_DRAW_POINTS_FOR_ELLIPSE;
 		df.drawSpotLabels = DEFAULT_DRAW_SPOT_LABELS;
+		df.fillSpots = DEFAULT_FILL_SPOTS;
 		df.focusLimit = DEFAULT_LIMIT_FOCUS_RANGE;
 		df.isFocusLimitViewRelative = DEFAULT_IS_FOCUS_LIMIT_RELATIVE;
 		df.ellipsoidFadeDepth = DEFAULT_ELLIPSOID_FADE_DEPTH;
