@@ -420,29 +420,28 @@ public class TrackSchemePanel extends JPanel implements
 			entityAnimator.setTime( System.currentTimeMillis() );
 			entityAnimator.setPaintEntities( graphOverlay );
 			display.repaint();
-
-			// adjust scrollbars sizes
-			final ScreenTransform t = new ScreenTransform();
-			entityAnimator.getLastComputedScreenEntities().getScreenTransform( t );
-			xScrollScale = 10000.0 / ( layoutMaxX - layoutMinX + 2 );
-			final int xval = ( int ) ( xScrollScale * t.getMinX() );
-			final int xext = ( int ) ( xScrollScale * ( t.getMaxX() - t.getMinX() ) );
-			final int xmin = ( int ) ( xScrollScale * ( layoutMinX - boundXLayoutBorder ) );
-			final int xmax = ( int ) ( xScrollScale * ( layoutMaxX + boundXLayoutBorder ) );
-			yScrollScale = 10000.0 / ( layoutMaxY - layoutMinY + 2 );
-			final int yval = ( int ) ( yScrollScale * t.getMinY() );
-			final int yext = ( int ) ( yScrollScale * ( t.getMaxY() - t.getMinY() ) );
-			final int ymin = ( int ) ( yScrollScale * ( layoutMinY - boundYLayoutBorder ) );
-			final int ymax = ( int ) ( yScrollScale * ( layoutMaxY + boundYLayoutBorder ) );
-			ignoreScrollBarChanges = true;
-			xScrollBar.setValues( xval, xext, xmin, xmax );
-			yScrollBar.setValues( yval, yext, ymin, ymax );
-			ignoreScrollBarChanges = false;
 		}
 		finally
 		{
 			lock.readLock().unlock();
 		}
+		// adjust scrollbars sizes
+		final ScreenTransform t = new ScreenTransform();
+		entityAnimator.getLastComputedScreenEntities().getScreenTransform( t );
+		xScrollScale = 10000.0 / ( layoutMaxX - layoutMinX + 2 );
+		final int xval = ( int ) ( xScrollScale * t.getMinX() );
+		final int xext = ( int ) ( xScrollScale * ( t.getMaxX() - t.getMinX() ) );
+		final int xmin = ( int ) ( xScrollScale * ( layoutMinX - boundXLayoutBorder ) );
+		final int xmax = ( int ) ( xScrollScale * ( layoutMaxX + boundXLayoutBorder ) );
+		yScrollScale = 10000.0 / ( layoutMaxY - layoutMinY + 2 );
+		final int yval = ( int ) ( yScrollScale * t.getMinY() );
+		final int yext = ( int ) ( yScrollScale * ( t.getMaxY() - t.getMinY() ) );
+		final int ymin = ( int ) ( yScrollScale * ( layoutMinY - boundYLayoutBorder ) );
+		final int ymax = ( int ) ( yScrollScale * ( layoutMaxY + boundYLayoutBorder ) );
+		ignoreScrollBarChanges = true;
+		xScrollBar.setValues( xval, xext, xmin, xmax );
+		yScrollBar.setValues( yval, yext, ymin, ymax );
+		ignoreScrollBarChanges = false;
 	}
 
 	@Override

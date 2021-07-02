@@ -233,7 +233,15 @@ public class TrackSchemeGraph<
 
 		modelGraph.addGraphListener( this );
 		modelGraph.addGraphChangeListener( this );
-		graphRebuilt();
+		lock.writeLock().lock();
+		try
+		{
+			graphRebuilt();
+		}
+		finally
+		{
+			lock.writeLock().unlock();
+		}
 	}
 
 	/**
